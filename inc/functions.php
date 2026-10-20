@@ -42,6 +42,12 @@ function can_view_profile($profileId) {
 	return $friendship && mysqli_num_rows($friendship) === 1;
 }
 
+function can_view_photo($photoId) {
+	$photo = db_query("SELECT uploader FROM fotos WHERE idfotos = ?", array((int)$photoId), 'i');
+	$row = $photo ? mysqli_fetch_assoc($photo) : false;
+	return $row && can_view_profile($row['uploader']);
+}
+
 function verify_password($plainText, $storedHash) {
 	if (!is_string($plainText) || !is_string($storedHash)) return false;
 	$info = password_get_info($storedHash);

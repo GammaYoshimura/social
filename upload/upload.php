@@ -128,8 +128,9 @@ if (!$image) {
 }
 $finalPath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
 if (file_exists($finalPath)) {
-	$base = pathinfo($fileName, PATHINFO_FILENAME);
-	$finalPath = $targetDir . DIRECTORY_SEPARATOR . $base . '_' . bin2hex(random_bytes(8)) . '.' . $extension;
+	@unlink($partPath);
+	imagedestroy($image);
+	upload_error('An image with this name already exists', 409);
 }
 $temporaryPath = tempnam($targetDir, '.image-');
 if ($temporaryPath === false) {

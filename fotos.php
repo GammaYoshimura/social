@@ -23,8 +23,8 @@ if ($albumType === 'subidas') {
 		(SELECT MAX(idfotos) FROM fotos WHERE uploader = ? AND idfotos < ?) AS siguiente,
 		(SELECT COUNT(idfotos) FROM fotos WHERE uploader = ?) AS totales,
 		((SELECT COUNT(idfotos) FROM fotos WHERE uploader = ?) - (SELECT COUNT(idfotos) FROM fotos WHERE uploader = ? AND idfotos < ?)) AS actual
-		FROM fotos LEFT JOIN albums ON albums_idalbums = idalbums LEFT JOIN usuarios ON uploader = idusuarios WHERE idfotos = ?";
-	$params = array((int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$photoId);
+		FROM fotos LEFT JOIN albums ON albums_idalbums = idalbums LEFT JOIN usuarios ON uploader = idusuarios WHERE idfotos = ? AND uploader = ?";
+	$params = array((int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$photoId, (int)$ownerId);
 	$q_fotos = db_query($query, $params, str_repeat('i', count($params)));
 } elseif ($albumType === 'etiquetadas') {
 	$query = "SELECT *,
@@ -34,8 +34,8 @@ if ($albumType === 'subidas') {
 		(SELECT MAX(idfotos) FROM fotos, etiquetas WHERE usuarios_idusuarios = ? AND idfotos = fotos_idfotos AND idfotos < ?) AS siguiente,
 		(SELECT COUNT(idfotos) FROM fotos, etiquetas WHERE usuarios_idusuarios = ? AND idfotos = fotos_idfotos) AS totales,
 		((SELECT COUNT(idfotos) FROM fotos, etiquetas WHERE usuarios_idusuarios = ?) - (SELECT COUNT(idfotos) FROM fotos, etiquetas WHERE usuarios_idusuarios = ? AND idfotos = fotos_idfotos AND idfotos < ?)) AS actual
-		FROM fotos LEFT JOIN albums ON albums_idalbums = idalbums LEFT JOIN usuarios ON uploader = idusuarios WHERE idfotos = ?";
-	$params = array((int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$photoId);
+		FROM fotos LEFT JOIN albums ON albums_idalbums = idalbums LEFT JOIN usuarios ON uploader = idusuarios WHERE idfotos = ? AND EXISTS (SELECT 1 FROM etiquetas WHERE fotos_idfotos = fotos.idfotos AND usuarios_idusuarios = ?)";
+	$params = array((int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$photoId, (int)$ownerId, (int)$ownerId, (int)$ownerId, (int)$photoId, (int)$photoId, (int)$ownerId);
 	$q_fotos = db_query($query, $params, str_repeat('i', count($params)));
 } else {
 	$albumId = filter_var($albumType, FILTER_VALIDATE_INT);

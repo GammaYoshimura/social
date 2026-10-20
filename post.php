@@ -29,6 +29,7 @@ if (isset($_POST['tablon_leer_comentarios'])) {
 	$requestedUser = isset($_POST['idusuarios']) ? filter_var($_POST['idusuarios'], FILTER_VALIDATE_INT) : false;
 	$page = isset($_POST['page']) ? filter_var($_POST['page'], FILTER_VALIDATE_INT) : 1;
 	if (!$requestedUser || !$page || $page < 1) die('Solicitud no válida');
+	if (!can_view_profile($requestedUser)) { http_response_code(404); exit('Perfil no disponible'); }
 	$limit = ($page - 1) * 10;
 	
 	$q_comentarios = db_query("SELECT idusuarios, nombre, apellidos, comentario, archivo,
@@ -89,6 +90,7 @@ if (isset($_POST['tablon_leer_comentarios'])) {
 if (isset($_POST['tablon_enviar_comentario']) && isset($_POST['receptor'], $_POST['comentario']) && is_string($_POST['comentario'])) {
 	$recipient = filter_var($_POST['receptor'], FILTER_VALIDATE_INT);
 	if (!$recipient) die('Destinatario no válido');
+	if (!can_view_profile($recipient)) { http_response_code(404); exit('Perfil no disponible'); }
 	// Comentario
 	db_query("INSERT INTO tablon (emisor,receptor,comentario,fecha) VALUES (?, ?, ?, now())", array((int)$global_idusuarios, (int)$recipient, $_POST['comentario']), 'iis');
 
@@ -292,6 +294,7 @@ if (isset($_POST['foto_borrar'])) {
 if (isset($_POST['foto_comentario']) && is_string($_POST['foto_comentario'])) {
 	$photoId = isset($_POST['idfotos']) ? filter_var($_POST['idfotos'], FILTER_VALIDATE_INT) : false;
 	if (!$photoId) die('Foto no válida');
+	if (!can_view_photo($photoId)) { http_response_code(404); exit('Foto no disponible'); }
 	db_query("INSERT INTO fotos_comentarios (fotos_idfotos,emisor,comentario,fecha) VALUES (?, ?, ?, now())", array((int)$photoId, (int)$global_idusuarios, $_POST['foto_comentario']), 'iis');
 	//TODO: Novedad/Notificar comentario a dueño & etiquetados
 	die();
@@ -302,6 +305,7 @@ if (isset($_POST['foto_leer_comentarios'])) {
 	$page = isset($_POST['page']) ? filter_var($_POST['page'], FILTER_VALIDATE_INT) : 1;
 	$photoId = isset($_POST['idfoto']) ? filter_var($_POST['idfoto'], FILTER_VALIDATE_INT) : false;
 	if (!$page || $page < 1 || !$photoId) die('Solicitud no válida');
+	if (!can_view_photo($photoId)) { http_response_code(404); exit('Foto no disponible'); }
 	$limit = ($page - 1) * 10;
 	$result = db_query("
 				SELECT idusuarios, nombre, apellidos, comentario,
