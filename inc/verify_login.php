@@ -1,6 +1,6 @@
 <?php
-	session_start();
 	require('inc/config.php');
+	start_secure_session();
 	
 	if (!isset($_SESSION['idsesion']) || !is_string($_SESSION['idsesion']) || $_SESSION['idsesion'] === '') {
 		header("Location: login.php", true, 302);

@@ -1,6 +1,6 @@
 <?php
-session_start();
 require('inc/config.php');
+start_secure_session();
 
 if(isset($_SESSION['idsesion']) && empty($_GET['activacion']))
 	header("Location: inicio.php");

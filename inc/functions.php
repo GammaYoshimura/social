@@ -57,6 +57,23 @@ function e($value) {
 	return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function start_secure_session() {
+	if (session_status() === PHP_SESSION_ACTIVE) return;
+	ini_set('session.use_strict_mode', '1');
+	ini_set('session.use_only_cookies', '1');
+	$current = session_get_cookie_params();
+	$secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && strtolower($_SERVER['HTTPS']) !== 'off';
+	session_set_cookie_params(array(
+		'lifetime' => 0,
+		'path' => $current['path'],
+		'domain' => $current['domain'],
+		'secure' => $secure,
+		'httponly' => true,
+		'samesite' => 'Lax'
+	));
+	session_start();
+}
+
 function NombreApellido($input, $maximo = 18) {//si no se pasa segudo parametro sera X por defecto
 	$minimo = 10;
 	//Posicion minima del espacio, evita nombres cortos

@@ -9,9 +9,9 @@ function upload_error($message, $status = 400) {
 	exit;
 }
 
-session_start();
 $ruta = '../';
 require('../inc/config.php');
+start_secure_session();
 
 if (!isset($_SESSION['idsesion']) || !is_string($_SESSION['idsesion']) || $_SESSION['idsesion'] === '') {
 	upload_error('Authentication required', 401);

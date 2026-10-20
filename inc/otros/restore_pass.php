@@ -1,5 +1,5 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+start_secure_session();
 if (!isset($_SESSION['chat_estado'])) $_SESSION['chat_estado'] = 0;
 if (!isset($_SESSION['reset_csrf']) || !is_string($_SESSION['reset_csrf'])) {
 	$_SESSION['reset_csrf'] = bin2hex(random_bytes(32));
