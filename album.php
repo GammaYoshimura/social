@@ -93,13 +93,13 @@ require APP_ROOT . '/chat.php';
 		<?php
 		echo "<div id='barra_navegacion'>";
 		if ($npage_initial > 1) {
-			echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_primera)) . "\">";
-			echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"location.href=" . e(json_encode($navegar_anterior)) . "\">";
+			echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_primera)) . "\">";
+			echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.jpg' onclick=\"location.href=" . e(json_encode($navegar_anterior)) . "\">";
 		}
 		echo "<div class='texto'>" . $npage_initial . " de " . $npage_max . "</div>";
 		if ($npage_initial < $npage_max) {
-			echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"location.href=" . e(json_encode($navegar_siguiente)) . "\">";
-			echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_ultima)) . "\">";
+			echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.jpg' onclick=\"location.href=" . e(json_encode($navegar_siguiente)) . "\">";
+			echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_ultima)) . "\">";
 		}
 		echo "</div>";
 		?>

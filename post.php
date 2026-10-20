@@ -72,14 +72,14 @@ if (isset($_POST['tablon_leer_comentarios'])) {
 		//BARRA NAVEGACION
 		echo "<div id='barra_navegacion'>";
 			if ($page > 1) {
-				echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"tablon_leer_comentarios(idusuarios, 1);\">";
-				echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"tablon_leer_comentarios(idusuarios, {$anterior});\">";
+				echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.jpg' onclick=\"tablon_leer_comentarios(idusuarios, 1);\">";
+				echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.jpg' onclick=\"tablon_leer_comentarios(idusuarios, {$anterior});\">";
 			}
 			echo "<div class='texto'>".$page." de ".$ultima."</div>";
 			
 		if ($page < $ultima) {
-				echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"tablon_leer_comentarios(idusuarios, {$siguiente});\">";
-				echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"tablon_leer_comentarios(idusuarios, " . $ultima . ");\">";
+				echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.jpg' onclick=\"tablon_leer_comentarios(idusuarios, {$siguiente});\">";
+				echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.jpg' onclick=\"tablon_leer_comentarios(idusuarios, " . $ultima . ");\">";
 			}
 		
 	}
@@ -337,14 +337,14 @@ if (isset($_POST['foto_leer_comentarios'])) {
 		//BARRA NAVEGACION
 		echo "<div id='barra_navegacion'>";
 			if ($page > 1) {
-				echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"foto_leer_comentarios(idfoto,1);\">";
-				echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"foto_leer_comentarios(idfoto,{$anterior});\">";
+				echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.jpg' onclick=\"foto_leer_comentarios(idfoto,1);\">";
+				echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.jpg' onclick=\"foto_leer_comentarios(idfoto,{$anterior});\">";
 			}
 			echo "<div class='texto'>".$page." de ".$ultima."</div>";
 			
 		if ($page < $ultima) {
-				echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"foto_leer_comentarios(idfoto,{$siguiente});\">";
-				echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"foto_leer_comentarios(idfoto," . $ultima . ");\">";
+				echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.jpg' onclick=\"foto_leer_comentarios(idfoto,{$siguiente});\">";
+				echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.jpg' onclick=\"foto_leer_comentarios(idfoto," . $ultima . ");\">";
 			}
 		
 	} else {

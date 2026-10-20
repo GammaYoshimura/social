@@ -28,7 +28,7 @@ if ($perfil == "ajeno") {
 } else {
 	head("Perfil");
 }
-echo "<script type='text/javascript' src='jscripts/perfil.js'></script>";
+echo "<script type='text/javascript' src='assets/js/perfil.js'></script>";
 echo "<body id='seccion_perfil'>";
 require APP_ROOT . '/estructura.inc.php';
 ?>

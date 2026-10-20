@@ -66,13 +66,13 @@
 		####### BARRA NAVEGACION
 		echo "<div id='barra_navegacion'>";
 		if($r_fotos['actual']>1){
-			echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_primera)) . "\">";
-			echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"location.href=" . e(json_encode($navegar_anterior)) . "\">";
+			echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_primera)) . "\">";
+			echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.jpg' onclick=\"location.href=" . e(json_encode($navegar_anterior)) . "\">";
 		}
 		echo "<div class='texto'>" . (int)$r_fotos['actual'] . " de " . (int)$r_fotos['totales'] . "</div>";
 		if($r_fotos['actual']<$r_fotos['totales']){
-			echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"location.href=" . e(json_encode($navegar_siguiente)) . "\">";
-			echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_ultima)) . "\">";
+			echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.jpg' onclick=\"location.href=" . e(json_encode($navegar_siguiente)) . "\">";
+			echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_ultima)) . "\">";
 		}
 		echo "</div>";
 	}else{

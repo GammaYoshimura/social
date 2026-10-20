@@ -126,14 +126,14 @@
 					//BARRA NAVEGACION
 					echo "<div id='barra_navegacion'>";
 						if ($_POST['page'] > 1) {
-							echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"cambiar_pagina(1);\">";
-							echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"cambiar_pagina($anterior);\">";
+							echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.jpg' onclick=\"cambiar_pagina(1);\">";
+							echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.jpg' onclick=\"cambiar_pagina($anterior);\">";
 						}
 						echo "<div class='texto'>" . (int)$_POST['page'] . " de " . (int)$ultima . "</div>";
 						
 					if ($_POST['page'] < $ultima) {
-							echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"cambiar_pagina($siguiente);\">";
-							echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"cambiar_pagina($ultima);\">";
+							echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.jpg' onclick=\"cambiar_pagina($siguiente);\">";
+							echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.jpg' onclick=\"cambiar_pagina($ultima);\">";
 						}
 					echo "</div>";
 				}else{

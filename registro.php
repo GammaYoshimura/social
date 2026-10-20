@@ -3,7 +3,7 @@ require_once __DIR__ . '/app/config.php';
 head("Registro");
 ?>
 <script type="text/javascript" src="jscripts/registro_js.php"></script>
-<script type="text/javascript" src="jscripts/forms.js"></script>
+<script type="text/javascript" src="assets/js/forms.js"></script>
 </head>
 <body id="seccion_registro">
 	<ul id="menudrop">

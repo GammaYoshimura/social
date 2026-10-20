@@ -1,5 +1,5 @@
 <ul id="menudrop">
-	<div class="icono"><img src="css/logosocial.png" onclick="location.href='inicio.php'"></div>
+	<div class="icono"><img src="assets/images/logosocial.png" onclick="location.href='inicio.php'"></div>
 	<li><a href="inicio.php">Inicio</a></li>
 	<li><a href="perfil.php">Perfil</a>
 	</li>

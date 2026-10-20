@@ -5,8 +5,8 @@ if (!$_GET['idalbum'])
 	header("inicio.php?noidalbum");
 
 head("Fotos");
-echo "<script type='text/javascript' src='jscripts/foto_edicion.js'></script>";
-echo "<script type='text/javascript' src='jscripts/foto_visualizador.js'></script>";
+echo "<script type='text/javascript' src='assets/js/foto_edicion.js'></script>";
+echo "<script type='text/javascript' src='assets/js/foto_visualizador.js'></script>";
 echo "<body id='seccion_fotos'>";
 require APP_ROOT . '/estructura.inc.php';
 require APP_ROOT . '/chat.php';

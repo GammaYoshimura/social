@@ -69,7 +69,7 @@ function ajax_post(p) {
 	var promise = ajax.always(function(msg) {
 		$("#ajax_cargando_padre").remove();
 		if (p.visible == true) {
-			$("body").append("<div id='ajax_cargando_padre'><div id='ajax_cargando'><img src='css/loading.gif'></div></div>");
+		$("body").append("<div id='ajax_cargando_padre'><div id='ajax_cargando'><img src='assets/images/loading.gif'></div></div>");
 		}
 	});
 
@@ -81,7 +81,7 @@ function ajax_post(p) {
 		if (msg.length == 0 && !p.retrieve){
 			if(p.visible == true) {
 				$("#ajax_cargando").addClass("ajax_ok");
-				$("#ajax_cargando").html("<img src='css/ok.png'>");
+		$("#ajax_cargando").html("<img src='assets/images/ok.png'>");
 				$("#ajax_cargando_padre").fadeIn(function() {
 					setTimeout(function() {
 						$("#ajax_cargando").fadeOut("slow");
@@ -119,10 +119,10 @@ function ajax_post(p) {
 function ajax_post_fail(msg) {
 	if (msg) {
 		$("#ajax_cargando").addClass("ajax_fail");
-		$("#ajax_cargando").html("<img src='css/advertencia.png'><div class='texto'>Ha ocurrido un error:<br><br>" + msg + "<br><br><a onclick='ajax_post_aceptar()'>Aceptar</a></div>");
+		$("#ajax_cargando").html("<img src='assets/images/advertencia.png'><div class='texto'>Ha ocurrido un error:<br><br>" + msg + "<br><br><a onclick='ajax_post_aceptar()'>Aceptar</a></div>");
 	} else {
 		$("#ajax_cargando").addClass("ajax_fail");
-		$("#ajax_cargando").html("<img src='css/advertencia.png'><div class='texto'>Ha ocurrido un error, int&eacute;ntalo de nuevo o ponte en contacto con nosotros.<br><br><a onclick='ajax_post_aceptar()'>Aceptar</a></div>");
+		$("#ajax_cargando").html("<img src='assets/images/advertencia.png'><div class='texto'>Ha ocurrido un error, int&eacute;ntalo de nuevo o ponte en contacto con nosotros.<br><br><a onclick='ajax_post_aceptar()'>Aceptar</a></div>");
 	} 
 	$("#ajax_cargando").css("width","500px");
 }

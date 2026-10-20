@@ -48,12 +48,12 @@ if(isset($_POST['email'], $_POST['password']) && is_string($_POST['email']) && i
 
 head("Login");
 echo "<script type='text/javascript' src='jscripts/login_js.php'></script>";
-echo "<script type='text/javascript' src='jscripts/forms.js'></script>";
+echo "<script type='text/javascript' src='assets/js/forms.js'></script>";
 ?>
 <body id="seccion_login">
 		<div class="centrar">
 			<div id="titulo">
-				<img src="css/logosocial.png">
+				<img src="assets/images/logosocial.png">
 				<h1><?php echo Sitio; ?></h1>
 			</div>
 			

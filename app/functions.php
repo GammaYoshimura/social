@@ -205,17 +205,17 @@ function head($title = Sitio) {
 				<meta name='csrf-token' content='" . (isset($_SESSION['csrf_token']) ? htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') : '') . "'>
 				
 				<!-- FAVICON -->
-				<link rel='icon' href='css/favicon.png' sizes='16x16 32x32 64x64 289x289' type='image/png'>
+				<link rel='icon' href='assets/images/favicon.png' sizes='16x16 32x32 64x64 289x289' type='image/png'>
  				 
 				<!-- CSS -->
-				<link rel='stylesheet' href='css/style.css' type='text/css' />
-				<link rel='stylesheet' href='jscripts/jquery-ui/css/redmond/jquery-ui-1.9.0.custom.css' type='text/css' />
+				<link rel='stylesheet' href='assets/css/style.css' type='text/css' />
+				<link rel='stylesheet' href='assets/vendor/jquery-ui/css/redmond/jquery-ui-1.9.0.custom.css' type='text/css' />
 				
 				<!-- JS -->
-				<script type='text/javascript' src='jscripts/jquery-1.8.2.min.js'></script>
-				<script type='text/javascript' src='jscripts/jquery-ui/jquery-ui-1.9.0.js'></script>
-				<script type='text/javascript' src='jscripts/general.js'></script>
-				<script type='text/javascript' src='jscripts/chat.js'></script>
+				<script type='text/javascript' src='assets/vendor/jquery/jquery-1.8.2.min.js'></script>
+				<script type='text/javascript' src='assets/vendor/jquery-ui/jquery-ui-1.9.0.js'></script>
+				<script type='text/javascript' src='assets/js/general.js'></script>
+				<script type='text/javascript' src='assets/js/chat.js'></script>
 				<script  type='text/javascript'>";
 
 	if ($_SESSION['chat_estado'] == "1") {

@@ -693,7 +693,7 @@ span.ayuda {
 }
 
 #seccion_perfil div.album_renombrar {
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	background-position: -246px -185px;
 	display: inline-block;
 	height: 15px;
@@ -703,7 +703,7 @@ span.ayuda {
 	width: 15px;
 }
 #seccion_perfil div.album_borrar {
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	background-position: -71px -342px;
 	background-repeat: no-repeat;
 	background-size: 395px 857px;
@@ -717,7 +717,7 @@ span.ayuda {
 
 #seccion_perfil div.conectado {
 	background-position: -9px -812px;
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	display: inline-block;
 	height: 8px;
 	margin: 0 4px;
@@ -756,7 +756,7 @@ span.ayuda {
 }
 
 #seccion_albums div.album_renombrar {
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	background-position: -246px -185px;
 	display: inline-block;
 	height: 15px;
@@ -766,7 +766,7 @@ span.ayuda {
 	width: 15px;
 }
 #seccion_albums div.album_borrar {
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	background-position: -71px -342px;
 	background-repeat: no-repeat;
 	background-size: 395px 857px;
@@ -891,7 +891,7 @@ div#barra_navegacion > a {
 }
 
 #lista_etiquetados li div {
-	background: url("icons1.png") repeat scroll -34px -194px transparent;
+	background: url("../images/icons1.png") repeat scroll -34px -194px transparent;
 	cursor: pointer;
 	display: none;
 	height: 12px;
@@ -913,7 +913,7 @@ div.etiqueta_seleccionada {
 }
 
 #seccion_fotos #opciones {
-	background-image: url("../css/iconos4.png");
+	background-image: url("../images/iconos4.png");
 	background-position: -102px -6px;
 	height: 12px;
 	width: 12px;
@@ -1215,7 +1215,7 @@ div.etiqueta_seleccionada {
 
 #chat #encabezado #desactivar {
 	display: inline-block;
-	background: url("iconos3.png") no-repeat scroll -85px -434px /473px 1085px transparent;
+	background: url("../images/iconos3.png") no-repeat scroll -85px -434px /473px 1085px transparent;
 	cursor: pointer;
 	height: 23px;
 	margin-left: 5px;
@@ -1232,7 +1232,7 @@ div.etiqueta_seleccionada {
 
 #chat_boton {
 	background-color: white;
-	background-image: url("../css/chat.png");
+	background-image: url("../images/chat.png");
 	background-repeat: no-repeat;
 	background-size: 50px 50px;
 	border-radius: 10px 10px 10px 10px;
@@ -1283,7 +1283,7 @@ div.etiqueta_seleccionada {
 
 #chat_contactos li div {
 	display: inline-block;
-	background-image: url('../css/iconos3.png');
+	background-image: url('../images/iconos3.png');
 	height: 8px;
 	width: 8px;
 	margin: 0 4px;
@@ -1321,7 +1321,7 @@ div.etiqueta_seleccionada {
 
 .chat_ventana div.conectado {
 	background-position: -9px -812px;
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	display: inline-block;
 	height: 8px;
 	margin: 0 4px;
@@ -1329,7 +1329,7 @@ div.etiqueta_seleccionada {
 }
 .chat_ventana div.desconectado {
 	background-position: -154px -812px;
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	display: inline-block;
 	height: 8px;
 	margin: 0 4px;
@@ -1340,7 +1340,7 @@ div.etiqueta_seleccionada {
 	cursor: pointer;
 	float: right;
 	display: inline-block;
-	background-image: url('../css/iconos3.png');
+	background-image: url('../images/iconos3.png');
 	height: 10px;
 	width: 10px;
 	margin: 0 4px;
@@ -1443,7 +1443,7 @@ div.etiqueta_seleccionada {
 }
 
 .chat_ventana_min .mensajes {
-	background-image: url("../css/iconos3.png");
+	background-image: url("../images/iconos3.png");
 	background-position: -176px -211px;
 	display: none;
 	height: 11px;
@@ -1550,10 +1550,10 @@ input[type=radio] + label {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
-	background: url(input-radio.png) 0px 0px no-repeat;
+	background: url(../images/input-radio.png) 0px 0px no-repeat;
 }
 input[type=radio]:checked + label {
-	background: url(input-radio.png) 0px -16px no-repeat;
+	background: url(../images/input-radio.png) 0px -16px no-repeat;
 }
 
 /***	JQUERY AUTOCOMPLETE	*/
