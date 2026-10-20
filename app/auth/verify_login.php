@@ -1,5 +1,5 @@
 <?php
-	require_once __DIR__ . '/config.php';
+	require_once dirname(__DIR__) . '/config.php';
 	start_secure_session();
 	
 	if (!isset($_SESSION['idsesion']) || !is_string($_SESSION['idsesion']) || $_SESSION['idsesion'] === '') {

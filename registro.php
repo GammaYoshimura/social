@@ -20,7 +20,7 @@ head("Registro");
 	<br>
 	<?php
 		if ($_POST) {
-				require __DIR__ . '/registro-post.php';
+				require APP_ROOT . '/auth/registro-post.php';
 		}
 	?>
 	<script>

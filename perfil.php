@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/app/verify_login.php';
+require_once __DIR__ . '/app/auth/verify_login.php';
 
 if (!isset($_GET['id']) || $_GET['id'] === '' || (int)$_GET['id'] === (int)$global_idusuarios) $_GET['id']=NULL; //Si el id es el mio, se ve la pagina en modo normal
 

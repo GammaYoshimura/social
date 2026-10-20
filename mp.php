@@ -1,5 +1,5 @@
 <?php
-	require_once __DIR__ . '/app/verify_login.php';
+	require_once __DIR__ . '/app/auth/verify_login.php';
 	
 	if($_GET['modo'] == "enviar"){
 		head("MPs Enviar");

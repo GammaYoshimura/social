@@ -1,7 +1,7 @@
 <?php
 
 //TODO: Pulir estetica
-require_once __DIR__ . '/app/verify_login.php';
+require_once __DIR__ . '/app/auth/verify_login.php';
 head("Subir fotos");
 require __DIR__ . '/upload/subida.html';
 ?>

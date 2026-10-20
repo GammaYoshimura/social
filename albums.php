@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/app/verify_login.php';
+require_once __DIR__ . '/app/auth/verify_login.php';
 head("Albums");
 echo "<body id='seccion_albums'>";
 require APP_ROOT . '/estructura.inc.php';

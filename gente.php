@@ -1,5 +1,5 @@
 <?php
-	require_once __DIR__ . '/app/verify_login.php';
+	require_once __DIR__ . '/app/auth/verify_login.php';
 	head("Gente");
 	echo "<body id='seccion_gente'>";
 	require APP_ROOT . '/estructura.inc.php';
@@ -126,14 +126,14 @@
 					//BARRA NAVEGACION
 					echo "<div id='barra_navegacion'>";
 						if ($_POST['page'] > 1) {
-							echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.jpg' onclick=\"cambiar_pagina(1);\">";
-							echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.jpg' onclick=\"cambiar_pagina($anterior);\">";
+							echo "<img class='flecha_back_top' src='assets/images/flechas/flecha_left_top.JPG' onclick=\"cambiar_pagina(1);\">";
+							echo "<img class='flecha_back' src='assets/images/flechas/flecha_left.JPG' onclick=\"cambiar_pagina($anterior);\">";
 						}
 						echo "<div class='texto'>" . (int)$_POST['page'] . " de " . (int)$ultima . "</div>";
 						
 					if ($_POST['page'] < $ultima) {
-							echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.jpg' onclick=\"cambiar_pagina($siguiente);\">";
-							echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.jpg' onclick=\"cambiar_pagina($ultima);\">";
+							echo "<img class='flecha_next' src='assets/images/flechas/flecha_right.JPG' onclick=\"cambiar_pagina($siguiente);\">";
+							echo "<img class='flecha_next_top' src='assets/images/flechas/flecha_right_top.JPG' onclick=\"cambiar_pagina($ultima);\">";
 						}
 					echo "</div>";
 				}else{

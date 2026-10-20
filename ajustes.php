@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/app/verify_login.php';
+require_once __DIR__ . '/app/auth/verify_login.php';
 head("Ajustes");
 require APP_ROOT . '/estructura.inc.php';
 ?>
