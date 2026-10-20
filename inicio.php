@@ -1,7 +1,7 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 head("Inicio");
-require ("inc/estructura.inc.php");
+require APP_ROOT . '/estructura.inc.php';
 ?>
 <div class="barra_izq">
 	<?php
@@ -59,11 +59,11 @@ require ("inc/estructura.inc.php");
 <div class="barra_centro_der">
 	<div class="marco" style="width: 717px;">
 		<?php
-			require ("inc/novedades.inc.php");
+			require APP_ROOT . '/novedades.inc.php';
 		?>
 	</div>
 	
 </div>
 <?php
-require ("inc/chat.php");
+require APP_ROOT . '/chat.php';
 ?>

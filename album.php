@@ -1,8 +1,8 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 head("Albums");
-require ("inc/estructura.inc.php");
-require ("inc/chat.php");
+require APP_ROOT . '/estructura.inc.php';
+require APP_ROOT . '/chat.php';
 ?>
 <div class="barra_full">
 	<div class="marco">

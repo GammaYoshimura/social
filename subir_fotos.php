@@ -1,14 +1,14 @@
 <?php
 
 //TODO: Pulir estetica
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 head("Subir fotos");
-require ("upload/subida.html");
+require __DIR__ . '/upload/subida.html';
 ?>
 </head>
 <body>
 	<?php
-	require ("inc/estructura.inc.php");
+	require APP_ROOT . '/estructura.inc.php';
 	?>
 	<div class="barra_full">
 	<div class="marco">
@@ -98,7 +98,7 @@ require ("upload/subida.html");
 		</form>
 
 <?php
-require ("inc/chat.php");
+require APP_ROOT . '/chat.php';
 ?>
 </body>
 </html>

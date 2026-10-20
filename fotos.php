@@ -1,5 +1,5 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 
 if (!$_GET['idalbum']) 
 	header("inicio.php?noidalbum");
@@ -8,8 +8,8 @@ head("Fotos");
 echo "<script type='text/javascript' src='jscripts/foto_edicion.js'></script>";
 echo "<script type='text/javascript' src='jscripts/foto_visualizador.js'></script>";
 echo "<body id='seccion_fotos'>";
-require ("inc/estructura.inc.php");
-require ("inc/chat.php");
+require APP_ROOT . '/estructura.inc.php';
+require APP_ROOT . '/chat.php';
 
 $ownerId = isset($_GET['iduser']) ? filter_var($_GET['iduser'], FILTER_VALIDATE_INT) : (int)$global_idusuarios;
 $photoId = isset($_GET['idfotos']) ? filter_var($_GET['idfotos'], FILTER_VALIDATE_INT) : 999999999;
@@ -55,7 +55,7 @@ if ($albumType === 'subidas') {
 }
 $r_fotos = $q_fotos ? mysqli_fetch_assoc($q_fotos) : false;
 if (!$r_fotos) { http_response_code(404); exit('Foto no disponible'); }
-require ("inc/fotos/main.inc.php");
-require ("inc/fotos/barra.inc.php");
-require ("inc/fotos/comentarios.inc.php");
+require APP_ROOT . '/fotos/main.inc.php';
+require APP_ROOT . '/fotos/barra.inc.php';
+require APP_ROOT . '/fotos/comentarios.inc.php';
 ?>

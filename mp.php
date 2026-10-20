@@ -1,26 +1,26 @@
 <?php
-	require("inc/verify_login.php");
+	require_once __DIR__ . '/app/verify_login.php';
 	
 	if($_GET['modo'] == "enviar"){
 		head("MPs Enviar");
 		estructura("seccion_mp_enviar");
-		require("inc/mps/enviar.inc.php");
+		require APP_ROOT . '/mps/enviar.inc.php';
 	}elseif($_GET['modo'] == "recibidos" OR !$_GET['modo']){
 		head("MPs Recibidos");
 		estructura("seccion_mp_recibidos");
-		require("inc/mps/recibidos.inc.php");
+		require APP_ROOT . '/mps/recibidos.inc.php';
 	}elseif($_GET['modo'] == "enviados"){
 		head("MPs Enviados");
 		estructura("seccion_mp_enviados");
-		require("inc/mps/enviados.inc.php");
+		require APP_ROOT . '/mps/enviados.inc.php';
 	}
 	
 
 	function estructura($seccion){
 		global $link;
 		echo "<body id='{$seccion}'>";
-		require("inc/estructura.inc.php");
-		require ("inc/chat.php");
+		require APP_ROOT . '/estructura.inc.php';
+		require APP_ROOT . '/chat.php';
 		print "<div class='barra_izq'>
 					<div class='marco_small lista_enlaces' style='padding: 0;'>
 						<ul>

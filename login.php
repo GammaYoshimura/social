@@ -1,5 +1,5 @@
 <?php
-require('inc/config.php');
+require_once __DIR__ . '/app/config.php';
 start_secure_session();
 
 if(isset($_SESSION['idsesion']) && empty($_GET['activacion']))

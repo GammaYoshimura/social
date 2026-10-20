@@ -1,5 +1,5 @@
 <?php
-require ('inc/config.php');
+require_once __DIR__ . '/app/config.php';
 head("Registro");
 ?>
 <script type="text/javascript" src="jscripts/registro_js.php"></script>
@@ -20,7 +20,7 @@ head("Registro");
 	<br>
 	<?php
 		if ($_POST) {
-			require ("registro-post.php");
+				require __DIR__ . '/registro-post.php';
 		}
 	?>
 	<script>
@@ -85,7 +85,7 @@ head("Registro");
 								<span class="select">
 									<select id="provincia" name="Provincia" class="validable">
 										<?php
-										require ("inc/select_provincias.html");
+									require APP_ROOT . '/select_provincias.html';
 										?>
 									</select> </span>
 							</div></td>

@@ -1,8 +1,8 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 head("Albums");
 echo "<body id='seccion_albums'>";
-require ("inc/estructura.inc.php");
+require APP_ROOT . '/estructura.inc.php';
 ?>
 <div class="barra_full">
 	<div class="marco">
@@ -137,5 +137,5 @@ require ("inc/estructura.inc.php");
 </div>
 
 <?php
-require ("inc/chat.php");
+require APP_ROOT . '/chat.php';
 ?>

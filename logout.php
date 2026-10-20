@@ -1,5 +1,5 @@
 <?php
-require('inc/config.php');
+require_once __DIR__ . '/app/config.php';
 start_secure_session();
 if (isset($_SESSION['idsesion']) && is_string($_SESSION['idsesion']) && $_SESSION['idsesion'] !== '') {
 	db_query("UPDATE usuarios SET idsesion = '' WHERE idsesion = ?", array($_SESSION['idsesion']), 's');

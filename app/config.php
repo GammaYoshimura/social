@@ -10,10 +10,17 @@ define("Sitio_Largo", "Social Networks");
 //Direccion de la web
 define("Sitio_direccion", "127.0.0.1/social");
 
-// Las credenciales se proporcionan por entorno o en inc/config.local.php,
-// que se mantiene fuera del repositorio.
-if (is_file(__DIR__ . '/config.local.php')) {
-	require_once __DIR__ . '/config.local.php';
+if (!defined('APP_ROOT')) {
+	define('APP_ROOT', __DIR__);
+}
+
+// Las credenciales se proporcionan por entorno o en app/config.local.php.
+$localConfig = __DIR__ . '/config.local.php';
+if (!is_file($localConfig)) {
+	$localConfig = dirname(__DIR__) . '/inc/config.local.php';
+}
+if (is_file($localConfig)) {
+	require_once $localConfig;
 }
 
 $mysqlHost = getenv('SOCIAL_DB_HOST');
@@ -63,5 +70,5 @@ setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
 mysqli_query($link, "SET lc_time_names = 'es_ES'");
 
 // $ruta se usa para meter ../ cuando la peticion procede de ficheros en subdirectorios
-require($ruta."inc/functions.php");
+require_once __DIR__ . '/functions.php';
 ?>

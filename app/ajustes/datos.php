@@ -85,7 +85,7 @@
 	<input type="radio" name="sexo" value="m" style="display: inline;" /> Mujer<br />
 	
 	Provincia: <select id="provincia">
-				<?php require 'inc/select_provincias.html'; ?>
+				<?php require APP_ROOT . '/select_provincias.html'; ?>
 				</select><br>
 				
 	Fecha nacimiento: <input type="text" id="fecha" value="<?php echo e($r_user['fnac2']); ?>" /><br>

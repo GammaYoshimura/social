@@ -20,7 +20,7 @@ $(function() {
 
 <?php
 	// VALIDADOR
-	require_once("../inc/validador.class.php");
+	require_once dirname(__DIR__) . '/app/validador.class.php';
 	$Validador = new Validador();
 	$Validador->SetInput(array('name' => 'Nombre', 'min' => '4'));
 	$Validador->SetInput(array('name' => 'Apellidos', 'obligatorio' => 'yes'));

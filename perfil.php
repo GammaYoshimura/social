@@ -1,5 +1,5 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 
 if (!isset($_GET['id']) || $_GET['id'] === '' || (int)$_GET['id'] === (int)$global_idusuarios) $_GET['id']=NULL; //Si el id es el mio, se ve la pagina en modo normal
 
@@ -30,23 +30,23 @@ if ($perfil == "ajeno") {
 }
 echo "<script type='text/javascript' src='jscripts/perfil.js'></script>";
 echo "<body id='seccion_perfil'>";
-require ("inc/estructura.inc.php");
+require APP_ROOT . '/estructura.inc.php';
 ?>
 
 <div class="barra_izq">
 	<?php
-	require 'inc/perfil/datos.php';
+	require APP_ROOT . '/perfil/datos.php';
 	?>
 </div>
 
 <div class="barra_centro_der" >
 	<?php
-	require 'inc/perfil/tablon.php';
-	require 'inc/perfil/albums.php';
-	require 'inc/perfil/comentarios.php';
+	require APP_ROOT . '/perfil/tablon.php';
+	require APP_ROOT . '/perfil/albums.php';
+	require APP_ROOT . '/perfil/comentarios.php';
 	?>
 </div>
 
 <?php
-require ("inc/chat.php");
+require APP_ROOT . '/chat.php';
 ?>

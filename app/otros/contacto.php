@@ -1,9 +1,9 @@
 <?php
-	require_once "inc/config.php";
+	require_once dirname(__DIR__) . '/config.php';
 	head("Contacto");
 	
 	// VALIDADOR
-	require_once("inc/validador.class.php");
+	require_once dirname(__DIR__) . '/validador.class.php';
 	$Validador = new Validador();
 	$Validador->SetInput(array('name' => 'nombreapellidos', 'alias' => 'Nombre y apellidos', 'min' => '6'));
 	$Validador->SetInput(array('name' => 'email', 'alias' => 'Email', 'formato' => '^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$'));

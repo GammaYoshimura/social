@@ -10,7 +10,7 @@ function upload_error($message, $status = 400) {
 }
 
 $ruta = '../';
-require('../inc/config.php');
+require_once dirname(__DIR__) . '/app/config.php';
 start_secure_session();
 
 if (!isset($_SESSION['idsesion']) || !is_string($_SESSION['idsesion']) || $_SESSION['idsesion'] === '') {

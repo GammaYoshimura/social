@@ -1,5 +1,5 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 
 $csrfToken = isset($_SERVER['HTTP_X_CSRF_TOKEN']) ? $_SERVER['HTTP_X_CSRF_TOKEN'] : (isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '');
 if (!is_string($csrfToken) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {

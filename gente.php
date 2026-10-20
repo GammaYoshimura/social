@@ -1,8 +1,8 @@
 <?php
-	require("inc/verify_login.php");
+	require_once __DIR__ . '/app/verify_login.php';
 	head("Gente");
 	echo "<body id='seccion_gente'>";
-	require("inc/estructura.inc.php");
+	require APP_ROOT . '/estructura.inc.php';
 ?>
 <div class='barra_izq_centro' style="width: 710px;">
 	<div class="marco">
@@ -203,7 +203,7 @@
 				<div class="input">
 					<span class="select">
 						<select name="provincia">
-							<?php require("inc/select_provincias.html"); ?>
+							<?php require APP_ROOT . '/select_provincias.html'; ?>
 						</select>
 					</span>
 				</div>
@@ -215,5 +215,5 @@
 </div>
 
 <?php
-require ("inc/chat.php");
+require APP_ROOT . '/chat.php';
 ?>

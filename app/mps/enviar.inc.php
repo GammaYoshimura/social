@@ -1,6 +1,6 @@
 <script>
 	<?php
-		require_once("inc/validador.class.php");
+		require_once APP_ROOT . '/validador.class.php';
 		$Validador = new Validador();
 		if(!isset($_GET['receptor']) || $_GET['receptor'] === ''){
 			$Validador->SetInput(array('name' => 'receptor', 'alias' => 'Destinatario', 'obligatorio' => 'si'));

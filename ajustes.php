@@ -1,7 +1,7 @@
 <?php
-require ("inc/verify_login.php");
+require_once __DIR__ . '/app/verify_login.php';
 head("Ajustes");
-require ("inc/estructura.inc.php");
+require APP_ROOT . '/estructura.inc.php';
 ?>
 <div class="barra_izq">
 	<div class="marco_small lista_enlaces" style="padding: 0;">
@@ -16,13 +16,13 @@ require ("inc/estructura.inc.php");
 	<div class="marco">
 	<?php
 	if ($_GET['seccion'] == "datos") {
-		require 'inc/ajustes/datos.php';
+		require APP_ROOT . '/ajustes/datos.php';
 	} elseif ($_GET['seccion'] == "peticiones") {
-		require 'inc/ajustes/peticiones.php';
+		require APP_ROOT . '/ajustes/peticiones.php';
 	} elseif ($_GET['seccion'] == "ip") {
-		require 'inc/ajustes/ip.php';
+		require APP_ROOT . '/ajustes/ip.php';
 	} else {
-		require 'inc/ajustes/datos.php';
+		require APP_ROOT . '/ajustes/datos.php';
 	}
 	?></div>
 </div>
