@@ -1,4 +1,10 @@
 $(document).ready(function() {
+	$.ajaxSetup({
+		beforeSend: function(xhr) {
+			var token = $("meta[name='csrf-token']").attr('content');
+			if (token) xhr.setRequestHeader('X-CSRF-Token', token);
+		}
+	});
 	
 	// Muestra y oculta los menús
 	$('#menu-altern ul li:has(ul)').hover(function(e) {

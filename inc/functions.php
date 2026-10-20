@@ -158,6 +158,7 @@ function head($title = Sitio) {
 				<meta name='Keywords' content='Social,red social,gratuito,asir'>
 				<meta name='Description' content='Proyecto de Red Social de 2 ASIR'>
 				 <meta name='author' content='Javier Gonzalez Rastrojo'>
+				<meta name='csrf-token' content='" . (isset($_SESSION['csrf_token']) ? htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') : '') . "'>
 				
 				<!-- FAVICON -->
 				<link rel='icon' href='css/favicon.png' sizes='16x16 32x32 64x64 289x289' type='image/png'>
