@@ -33,10 +33,10 @@
 
 		// No separar del borde
 		$mensaje = "
-		<b>Emisor:</b> ".$_POST['nombreapellidos']."<br>
-		<b>Asunto:</b> ".$_POST['asunto']."<br>
-		<b>Email:</b> ".$_POST['email']."<br>
-		<b>Mensaje:</b><br><br> ".nl2br($_POST['mensaje']);
+		<b>Emisor:</b> ".e($_POST['nombreapellidos'])."<br>
+		<b>Asunto:</b> ".e($_POST['asunto'])."<br>
+		<b>Email:</b> ".e($_POST['email'])."<br>
+		<b>Mensaje:</b><br><br> ".nl2br(e($_POST['mensaje']));
 
 		$email_state = email_send($destinatario_name, $destinatario_email, $titulo, $mensaje);
 		if($email_state != TRUE){
@@ -49,22 +49,22 @@
 	<form method='post' action='otros.php?contacto=1'>
 		<div class="input">
 			<span>
-				<input name="nombreapellidos" class="validable" type="text" value="<?php echo $_POST['nombreapellidos']; ?>" placeholder="Tu nombre y apellidos">
+				<input name="nombreapellidos" class="validable" type="text" value="<?php echo isset($_POST['nombreapellidos']) && is_string($_POST['nombreapellidos']) ? e($_POST['nombreapellidos']) : ''; ?>" placeholder="Tu nombre y apellidos">
 			</span>
 		</div><br>
 		<div class="input">
 			<span>
-				<input name="email" class="validable" type="text" value="<?php echo $_POST['email']; ?>" placeholder="Tu direccion email">
+				<input name="email" class="validable" type="text" value="<?php echo isset($_POST['email']) && is_string($_POST['email']) ? e($_POST['email']) : ''; ?>" placeholder="Tu direccion email">
 			</span>
 		</div><br>
 		<div class="input">
 			<span>
-				<input name="asunto" class="validable" type="text" value="<?php echo $_POST['asunto']; ?>" placeholder="El asunto del mensaje">
+				<input name="asunto" class="validable" type="text" value="<?php echo isset($_POST['asunto']) && is_string($_POST['asunto']) ? e($_POST['asunto']) : ''; ?>" placeholder="El asunto del mensaje">
 			</span>
 		</div><br>
 		<div class="input">
 			<span>
-				<textarea name="mensaje" class="validable" placeholder="Escribe aqui tu mensaje..."><?php echo $_POST['mensaje']; ?></textarea>
+				<textarea name="mensaje" class="validable" placeholder="Escribe aqui tu mensaje..."><?php echo isset($_POST['mensaje']) && is_string($_POST['mensaje']) ? e($_POST['mensaje']) : ''; ?></textarea>
 			</span>
 		</div><br>
 		<button type='button' class="azul" onclick="validador('submit')">

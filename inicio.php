@@ -11,11 +11,11 @@ require ("inc/estructura.inc.php");
 			print "<div class='marco_small'>";
 			while($r_notifi = mysqli_fetch_assoc($q_notifi)){
 				if($r_notifi['tipo'] == "peticion"){
-					print "<a href='ajustes.php?seccion=peticiones'>Tienes {$r_notifi['datos']} peticiones de amistad</a><br>";
+					print "<a href='ajustes.php?seccion=peticiones'>Tienes " . (int)$r_notifi['datos'] . " peticiones de amistad</a><br>";
 				}elseif($r_notifi['tipo'] == "mp"){
-					print "<a href='mp.php?modo=recibidos'>Tienes {$r_notifi['datos']} mensaje privado</a><br>";
+					print "<a href='mp.php?modo=recibidos'>Tienes " . (int)$r_notifi['datos'] . " mensaje privado</a><br>";
 				}elseif($r_notifi['tipo'] == "tablon"){
-					print "<a href='perfil.php'>Tienes {$r_notifi['datos']} comentarios en tu tablon</a><br>";
+					print "<a href='perfil.php'>Tienes " . (int)$r_notifi['datos'] . " comentarios en tu tablon</a><br>";
 				}
 			}
 			print "</div>";

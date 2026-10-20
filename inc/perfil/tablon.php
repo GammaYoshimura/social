@@ -25,7 +25,7 @@
 					
 		<div class="input">
 			<span>
-				<input id="estado" name="estado" placeholder="Escribe algo sobre ti" type="text" value="<?php echo $estado; ?>" size='80' maxlength='40'>
+				<input id="estado" name="estado" placeholder="Escribe algo sobre ti" type="text" value="<?php echo e($estado); ?>" size='80' maxlength='40'>
 			</span>
 		</div>
 		<button type='button' class="azul" onclick="estado_cambiar(estado_ori)"><span><b>Cambiar</b></span></button>
@@ -34,7 +34,7 @@
 	}else{
 		echo "<div class='blockquote'>
 				<div>“</div>
-					<span>{$estado}</span>
+					<span>" . e($estado) . "</span>
 				<div>”</div>
 			</div>";
 	}

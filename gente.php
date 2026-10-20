@@ -22,7 +22,7 @@
 					
 					$(document).ready(function(){
 						// Marcar la opcion del select elegido
-						$("select[name='provincia']").find("option[value='<?php echo $_POST['provincia']; ?>']").attr("selected","true");
+						$("select[name='provincia']").find("option[value='<?php echo isset($_POST['provincia']) ? (int)$_POST['provincia'] : 0; ?>']").attr("selected","true");
 					});
 				</script>
 				
@@ -71,18 +71,20 @@
 				if(mysqli_num_rows($q_search)){
 					error_mysql();
 					while($r_search = mysqli_fetch_assoc($q_search)){
+						$userId = (int)$r_search['idusuarios'];
+						$safeName = e($r_search['nombre'] . " " . $r_search['apellidos']);
 						//print_r($r_search);
 						
 						//Estado de la amistad
 						if($r_search['amigo']){
 							$estado_amistad="";
-							$nombre = "<a href='perfil.php?id={$r_search['idusuarios']}' class='link'>{$r_search['nombre']} {$r_search['apellidos']}</a>";
+							$nombre = "<a href='perfil.php?id=" . $userId . "' class='link'>" . $safeName . "</a>";
 						}elseif($r_search['enviada']){
 							$estado_amistad="<button type='button' disabled class='verde'><span><b>Peticion enviada</b></span></button>";
-							$nombre = $r_search['nombre']." ".$r_search['apellidos'];
+							$nombre = $safeName;
 						}else{
-							$estado_amistad="<button type='button' class='verde' onclick=\"peticion_enviar('{$r_search['idusuarios']}')\"><span><b>Agregar</b></span></button>";
-							$nombre = $r_search['nombre']." ".$r_search['apellidos'];
+							$estado_amistad="<button type='button' class='verde' onclick=\"peticion_enviar(" . $userId . ")\"><span><b>Agregar</b></span></button>";
+							$nombre = $safeName;
 						}
 						
 						// Imprimimos los resultados
@@ -90,13 +92,13 @@
 						print "
 							<div class='resultado' id='resultado{$r_search['idusuarios']}'>
 								<div class='img'>
-									<img alt='foto principal' src='{$r_search['archivo']}' />
+									<img alt='foto principal' src='" . e($r_search['archivo']) . "' />
 								</div>
 								<div class='datos'>
 									<div class='nombre'>{$nombre}</div>
 									<div class='info'>
 										{$r_search['edad']} Años<br>
-										".IdProvincia($r_search['provincia'])."<br>
+										".e(IdProvincia($r_search['provincia']))."<br>
 									</div>
 								</div>
 								<div class='right'>
@@ -104,7 +106,7 @@
 										{$estado_amistad}
 									</div>
 									<div class='mp'>
-										<button type='button' class='azul' onclick=\"location.href='mp.php?modo=enviar&amp;receptor={$r_search['idusuarios']}'\"><span><b>Enviar MP</b></span></button>
+										<button type='button' class='azul' onclick=\"location.href='mp.php?modo=enviar&amp;receptor=" . $userId . "'\"><span><b>Enviar MP</b></span></button>
 									</div>
 								</div>
 							</div>
@@ -127,7 +129,7 @@
 							echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"cambiar_pagina(1);\">";
 							echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"cambiar_pagina($anterior);\">";
 						}
-						echo "<div class='texto'>".$_POST['page']." de ".$ultima."</div>";
+						echo "<div class='texto'>" . (int)$_POST['page'] . " de " . (int)$ultima . "</div>";
 						
 					if ($_POST['page'] < $ultima) {
 							echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"cambiar_pagina($siguiente);\">";
@@ -147,13 +149,13 @@
 		<form name="busqueda" method='post' action='gente.php'>
 				<div class="input">
 					<span>
-						<input name="nombre" type="text" value="<?php echo $_POST['nombre']; ?>" placeholder="Nombre">
+						<input name="nombre" type="text" value="<?php echo isset($_POST['nombre']) && is_string($_POST['nombre']) ? e($_POST['nombre']) : ''; ?>" placeholder="Nombre">
 					</span>
 				</div><br>
 				
 				<div class="input">
 					<span>
-						<input name="apellidos" type="text" value="<?php echo $_POST['apellidos']; ?>" placeholder="Apellidos">
+						<input name="apellidos" type="text" value="<?php echo isset($_POST['apellidos']) && is_string($_POST['apellidos']) ? e($_POST['apellidos']) : ''; ?>" placeholder="Apellidos">
 					</span>
 				</div><br>
 				

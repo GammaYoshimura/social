@@ -43,7 +43,7 @@ $mensaje = "
 <b style=\"color:white;font-size:40px;\">".Sitio."</b><br>
 <div style=\"background-color:white;border-radius:10px;display: inline-block;
 margin: 10px;padding:20px;text-align:left;font-size:15px;\">
-Hola ".$_POST['Nombre'].", has iniciado el proceso de registro en ".Sitio.".<br>
+Hola ".htmlspecialchars($_POST['Nombre'], ENT_QUOTES, 'UTF-8').", has iniciado el proceso de registro en ".Sitio.".<br>
 Para completarlo, visita la siguiente direccion:<br>
 <a href=\"http://".Sitio_direccion."/otros.php?activar_cuenta=1&amp;
 codigo=".$codigo_activacion."\">
@@ -64,7 +64,7 @@ http://".Sitio_direccion."/otros.php?activar_cuenta=1&amp;codigo=".$codigo_activ
 		<div class="centrar">
 			<div class="marco">
 				<h3 style="text-align: center;color: green;margin:5px 5px 30px 5px;">Registro completado con &eacute;xito</h3>
-				<?php echo $_POST['Nombre']; ?>, tu cuenta ha sido creada correctamente.<br>
+				<?php echo e($_POST['Nombre']); ?>, tu cuenta ha sido creada correctamente.<br>
 				Te hemos enviado un correo a tu direccion email con un enlace que debes visitar para completar el registro.<br>
 			</div>
 		</div>

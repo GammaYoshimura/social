@@ -1,7 +1,7 @@
 <div class="marco" >
 	<h2>Comentarios</h2>
 	<script>
-		idusuarios = "<?php echo $r_user['idusuarios']; ?>";
+		idusuarios = <?php echo (int)$r_user['idusuarios']; ?>;
 		function tablon_leer_comentarios(idusuarios, page) {
 			comentarios = ajax_post({
 				data : "tablon_leer_comentarios=1&idusuarios="+idusuarios+"&page="+page,

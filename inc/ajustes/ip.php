@@ -13,7 +13,7 @@
 		print "
 			<tr>
 				<td>" . utf8_encode(ucfirst($r_accesos['fechaf'])) . "</td>
-				<td style='text-align:center;'>{$r_accesos['ip']}</td>
+				<td style='text-align:center;'>" . e($r_accesos['ip']) . "</td>
 			</tr>
 		";
 	}

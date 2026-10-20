@@ -84,7 +84,7 @@ echo "<script type='text/javascript' src='jscripts/forms.js'></script>";
 					Email: 					
 						<div class="input">
 							<span>
-								<input id="email" name="email" class="validable" type="text" value="<?php echo $_POST['email']; ?>" maxlength='40' autofocus placeholder="ejemplo@mail.com">
+								<input id="email" name="email" class="validable" type="text" value="<?php echo isset($_POST['email']) && is_string($_POST['email']) ? e($_POST['email']) : ''; ?>" maxlength='40' autofocus placeholder="ejemplo@mail.com">
 							</span>
 						</div><br>
 					

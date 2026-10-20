@@ -80,7 +80,7 @@ require ("upload/subida.html");
 						<span class='select'>
 							<select name='idalbums'><option value='NULL'>Ninguno</option>";
 				while ($row = mysqli_fetch_assoc($albums)) {
-					echo "<option value='" . $row['idalbums'] . "'>" . $row['album'] . "</option>";
+					echo "<option value='" . (int)$row['idalbums'] . "'>" . e($row['album']) . "</option>";
 				}
 				echo "</select></span></div>";
 			} else {

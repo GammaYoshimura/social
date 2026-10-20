@@ -24,13 +24,13 @@ require ("inc/estructura.inc.php");
 	}
 
 	//Subidas
-	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=subidas'>Fotos subidas</a></div>";
+	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . (int)$_GET['iduser'] . "&amp;idalbum=subidas'>Fotos subidas</a></div>";
 	$fotos = db_query("SELECT * FROM fotos WHERE uploader = ? ORDER BY idfotos DESC LIMIT 3", array((int)$_GET['iduser']), 'i');
 	if (mysqli_num_rows($fotos)) {
 		$bottom = 0;
 		$left = 0;
 		while ($row = mysqli_fetch_assoc($fotos)) {
-			echo "<a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=subidas'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . $row['archivo'] . "' /><br></a><br>";
+			echo "<a href='album.php?iduser=" . (int)$_GET['iduser'] . "&amp;idalbum=subidas'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . e($row['archivo']) . "' /><br></a><br>";
 
 			$bottom = $bottom + 90;
 			$left = $left + 90;
@@ -41,13 +41,13 @@ require ("inc/estructura.inc.php");
 	echo "</div>";
 
 	//Etiquetadas
-	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=etiquetadas'>Fotos etiquetadas</a></div>";
+	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . (int)$_GET['iduser'] . "&amp;idalbum=etiquetadas'>Fotos etiquetadas</a></div>";
 	$fotos = db_query("SELECT * FROM fotos, etiquetas WHERE usuarios_idusuarios = ? AND idfotos = fotos_idfotos ORDER BY idfotos DESC LIMIT 3", array((int)$_GET['iduser']), 'i');
 	if (mysqli_num_rows($fotos)) {
 		$bottom = 0;
 		$left = 0;
 		while ($row = mysqli_fetch_assoc($fotos)) {
-			echo "<a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=etiquetadas'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . $row['archivo'] . "' /></a><br>";
+			echo "<a href='album.php?iduser=" . (int)$_GET['iduser'] . "&amp;idalbum=etiquetadas'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . e($row['archivo']) . "' /></a><br>";
 			$bottom = $bottom + 90;
 			$left = $left + 90;
 		}
@@ -64,16 +64,16 @@ require ("inc/estructura.inc.php");
 		while ($row = mysqli_fetch_assoc($personalizados)) {
 			print("<div class='album'>
 					<div class='album_titulo'>
-						<a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=" . $row['idalbums'] . "'>" . $row['album'] . "</a>
-						<div class='album_renombrar' onclick=\"album_renombrar('" . $row['idalbums'] . "','" . $row['album'] . "')\"></div>
-						<div class='album_borrar' onclick=\"album_borrar('" . $row['idalbums'] . "','" . $row['album'] . "')\"></div>
+						<a href='album.php?iduser=" . (int)$_GET['iduser'] . "&amp;idalbum=" . (int)$row['idalbums'] . "'>" . e($row['album']) . "</a>
+						<div class='album_renombrar' onclick=\"album_renombrar(" . e(json_encode((int)$row['idalbums'])) . "," . e(json_encode($row['album'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)) . ")\"></div>
+						<div class='album_borrar' onclick=\"album_borrar(" . e(json_encode((int)$row['idalbums'])) . "," . e(json_encode($row['album'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)) . ")\"></div>
 					</div>");
 			$fotos = db_query("SELECT * FROM fotos WHERE albums_idalbums = ? ORDER BY idfotos LIMIT 3", array((int)$row['idalbums']), 'i');
 			if (mysqli_num_rows($fotos)) {
 				$bottom = 0;
 				$left = 0;
 				while ($row2 = mysqli_fetch_assoc($fotos)) {
-					echo "<a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=" . $row['idalbums'] . "'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . $row2['archivo'] . "' /></a><br>";
+					echo "<a href='album.php?iduser=" . (int)$_GET['iduser'] . "&amp;idalbum=" . (int)$row['idalbums'] . "'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . e($row2['archivo']) . "' /></a><br>";
 					$bottom = $bottom + 90;
 					$left = $left + 90;
 				}

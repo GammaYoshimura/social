@@ -12,7 +12,7 @@
 			$result=db_query("SELECT * FROM albums WHERE usuarios_idusuarios = ?", array((int)$global_idusuarios), 'i');
 			if(mysqli_num_rows($result)>0){
 				while($row=mysqli_fetch_assoc($result)){
-					echo "<li><a href='album.php?idalbum=".$row['idalbums']."&amp;iduser=".$global_idusuarios."'>".$row['album']."</a></li>";
+					echo "<li><a href='album.php?idalbum=" . (int)$row['idalbums'] . "&amp;iduser=" . (int)$global_idusuarios . "'>" . e($row['album']) . "</a></li>";
 				}
 			}
 			?>

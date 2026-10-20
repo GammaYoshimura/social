@@ -10,8 +10,8 @@
 		
 		
 	<?php 
-		echo NombreApellido($r_fotos['nombre'].' '.$r_fotos['apellidos'], 26)."<br>";
-		echo strftime ("%A %#d de %B del %y", strtotime($r_fotos['fecha']))."<br>";	
+		echo e(NombreApellido($r_fotos['nombre'].' '.$r_fotos['apellidos'], 26))."<br>";
+		echo e(strftime ("%A %#d de %B del %y", strtotime($r_fotos['fecha'])))."<br>";	
 	 ?>
 	 
 		<div id="foto_album">
@@ -19,9 +19,9 @@
 				Album
 				<?php
 				if ($r_fotos['album']) {
-					echo $r_fotos['album'];
+					echo e($r_fotos['album']);
 				} else {
-					echo $_GET['idalbum'];
+					echo e($_GET['idalbum']);
 				}
 				echo "</div>";
 				echo "<div class='edicion'>";
@@ -31,10 +31,10 @@
 									<select name='foto_album'><option value=''>Ninguno</option>";
 				if (mysqli_num_rows($albums) > 0) {
 					while ($row = mysqli_fetch_assoc($albums)) {
-						echo "<option value='" . $row['idalbums'] . "'";
+						echo "<option value='" . (int)$row['idalbums'] . "'";
 						if ($r_fotos['albums_idalbums'] == $row['idalbums'])
 							echo " selected";
-						echo ">" . $row['album'] . "</option>";
+						echo ">" . e($row['album']) . "</option>";
 					}
 				} else {
 		
@@ -51,14 +51,17 @@
 	<ul id="lista_etiquetados" style='margin:0;list-style: none outside none;padding:0px;'>
 		<div id="nadie">No hay nadie etiquetado</div>
 		<?php
+		$taggedData = array();
 		if (mysqli_num_rows($q_fotos)) {
 			if (mysqli_num_rows($etiquetados) > 0) {
 				mysqli_data_seek($etiquetados, 0);
 				while ($etiqueta = mysqli_fetch_assoc($etiquetados)) {
-					print "<li class='etiqueta_".$etiqueta['idusuarios']."'>
-						<img src='{$etiqueta['archivo']}' class='autocomplete_img'>
-						".NombreApellido($etiqueta['nombre']." ".$etiqueta['apellidos'])."
-						<div onclick=\"etiqueta_borrar('" . NombreApellido($etiqueta['nombre'] . " " . $etiqueta['apellidos']) . "','" . $etiqueta['idusuarios'] . "','" . $etiqueta['archivo'] . "')\">
+					$tagName = NombreApellido($etiqueta['nombre'] . " " . $etiqueta['apellidos']);
+					$taggedData[] = array('value' => (int)$etiqueta['idusuarios'], 'label' => $tagName, 'x' => (int)$etiqueta['x'], 'y' => (int)$etiqueta['y']);
+					print "<li class='etiqueta_" . (int)$etiqueta['idusuarios'] . "'>
+						<img src='" . e($etiqueta['archivo']) . "' class='autocomplete_img'>
+						" . e($tagName) . "
+						<div onclick=\"etiqueta_borrar(" . e(json_encode($tagName, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)) . "," . (int)$etiqueta['idusuarios'] . "," . e(json_encode($etiqueta['archivo'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)) . ")\">
 						</div>
 						</li>";
 				}
@@ -67,7 +70,7 @@
 		?>
 	</ul>
 	<?php
-	$query=db_query("
+		$query=db_query("
 			SELECT idusuarios, nombre, apellidos, archivo
 			FROM amigos, usuarios
 			LEFT JOIN fotos
@@ -83,43 +86,15 @@
 	?>
 	<script>
 		//Declarando variables
-		lista_amigos = new Array();
-		lista_etiquetados = [<?php
-		if (mysqli_num_rows($q_fotos)) {
-			if (mysqli_num_rows($etiquetados) > 0) {
-				mysqli_data_seek($etiquetados, 0);
-				$i_temp = 0;
-				while ($etiqueta = mysqli_fetch_assoc($etiquetados)) {
-					if ($i_temp != 0)
-						echo ",";
-					print "{
-						value: " . $etiqueta['idusuarios'] . ",
-						label: '" . NombreApellido($etiqueta['nombre'] . " " . $etiqueta['apellidos']) . "',
-						 x: " . $etiqueta['x'] . ",
-						 y: " . $etiqueta['y'] . "
-					}";
-					$i_temp++;
-				}
-			}
-		}
-		?>
-			];
-		idfoto = <?php echo $r_fotos['idfotos']; ?>;
-		var lista_amigos = [
+		var lista_etiquetados = <?php echo json_encode($taggedData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
+		idfoto = <?php echo (int)$r_fotos['idfotos']; ?>;
 		<?php
-		$i_temp = 0;
+		$friendData = array();
 		while ($row = mysqli_fetch_assoc($query)) {
-			if ($i_temp != 0)
-				echo ",";
-			echo "{
-				value: '" . $row['idusuarios'] . "',
-				label: '" . NombreApellido($row['nombre'] . " " . $row['apellidos']) . "',
-				icon: '".$row['archivo']."'
-			}";
-			$i_temp++;
+			$friendData[] = array('value' => (int)$row['idusuarios'], 'label' => NombreApellido($row['nombre'] . ' ' . $row['apellidos']), 'icon' => $row['archivo']);
 		}
 		?>
-	];
+		var lista_amigos = <?php echo json_encode($friendData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
 	</script>
 
 	<div class="edicion amigo">

@@ -16,9 +16,9 @@
 	
 	$(document).ready(function(){
 		// Marcar las opciones por defecto
-		$("select#provincia").find("option[value='<?php echo $r_user['provincia']; ?>']").attr("selected","true");
-		$("input[name='sexo'][value='<?php echo $r_user['sexo']; ?>']").attr("checked","true");
-		$( "#fecha" ).datepicker( "setDate", "<?php echo $r_user['fnac2']; ?>" );
+		$("select#provincia").find("option[value='<?php echo (int)$r_user['provincia']; ?>']").attr("selected","true");
+		$("input[name='sexo'][value='<?php echo in_array($r_user['sexo'], array('h', 'm'), true) ? $r_user['sexo'] : ''; ?>']").attr("checked","true");
+		$( "#fecha" ).datepicker( "setDate", <?php echo json_encode($r_user['fnac2']); ?> );
 	});
 	
 	function cambio_email(){
@@ -78,8 +78,8 @@
 
 <div id="cambio_datos" class="">
 	<h3>Cambio de datos</h3>
-	Nombre: <input type="text" id="nombre" value="<?php echo $r_user['nombre']; ?>" /><br>
-	Apellidos: <input type="text" id="apellidos" value="<?php echo $r_user['apellidos']; ?>" /><br>
+	Nombre: <input type="text" id="nombre" value="<?php echo e($r_user['nombre']); ?>" /><br>
+	Apellidos: <input type="text" id="apellidos" value="<?php echo e($r_user['apellidos']); ?>" /><br>
 	Sexo: 
 	<input type="radio" name="sexo" value="h" style="display: inline;" /> Hombre
 	<input type="radio" name="sexo" value="m" style="display: inline;" /> Mujer<br />
@@ -88,8 +88,8 @@
 				<?php require 'inc/select_provincias.html'; ?>
 				</select><br>
 				
-	Fecha nacimiento: <input type="text" id="fecha" value="<?php echo $r_user['fecha']; ?>" /><br>
-		<input type="hidden" id="fecha_hidden" value="<?php echo $r_user['fnac']; ?>"/>
+	Fecha nacimiento: <input type="text" id="fecha" value="<?php echo e($r_user['fnac2']); ?>" /><br>
+		<input type="hidden" id="fecha_hidden" value="<?php echo e($r_user['fnac']); ?>"/>
 
 	<button type='button' class="azul" onclick="cambio_datos()"><span><b>Cambiar datos</b></span></button>
 </div>

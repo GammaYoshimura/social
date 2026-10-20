@@ -49,13 +49,13 @@ if (isset($_POST['tablon_leer_comentarios'])) {
 	if (mysqli_num_rows($q_comentarios) > 0) {
 		while ($r_comentarios = mysqli_fetch_assoc($q_comentarios)) {
 			print "<div class='foto_comentario'> 
-					 <img src='{$r_comentarios['archivo']}' class='imagen_perfil'> 
+					 <img src='" . e($r_comentarios['archivo']) . "' class='imagen_perfil'> 
 					 <div> 
 						<div> 
-							<div class='foto_come_titu'><a class='link' href='perfil.php?id={$r_comentarios['idusuarios']}'>{$r_comentarios['nombre']} {$r_comentarios['apellidos']}</a></div> 
-							<div class='foto_come_fecha'>{$r_comentarios['fecha2']}</div> 
+							<div class='foto_come_titu'><a class='link' href='perfil.php?id=" . (int)$r_comentarios['idusuarios'] . "'>" . e($r_comentarios['nombre']) . " " . e($r_comentarios['apellidos']) . "</a></div> 
+							<div class='foto_come_fecha'>" . e($r_comentarios['fecha2']) . "</div> 
 						</div> 
-						<div class='foto_come_men'>{$r_comentarios['comentario']}</div> 
+						<div class='foto_come_men'>" . e($r_comentarios['comentario']) . "</div> 
 					</div> 
 				</div>";
 		}
@@ -311,13 +311,13 @@ if (isset($_POST['foto_leer_comentarios'])) {
 	if (mysqli_num_rows($result) > 0) {
 		while ($row = mysqli_fetch_assoc($result)) {
 			print "<div class='foto_comentario'> 
-					 <img src='{$row['img_princi']}' class='imagen_perfil'> 
+					 <img src='" . e($row['img_princi']) . "' class='imagen_perfil'> 
 					 <div> 
 						<div> 
-							<div class='foto_come_titu'><a href='perfil.php?id={$row['idusuarios']}'>{$row['nombre']} {$row['apellidos']}</a></div> 
-							<div class='foto_come_fecha'>{$row['fecha2']}</div> 
+							<div class='foto_come_titu'><a href='perfil.php?id=" . (int)$row['idusuarios'] . "'>" . e($row['nombre']) . " " . e($row['apellidos']) . "</a></div> 
+							<div class='foto_come_fecha'>" . e($row['fecha2']) . "</div> 
 						</div> 
-						<div class='foto_come_men'>{$row['comentario']}</div> 
+						<div class='foto_come_men'>" . e($row['comentario']) . "</div> 
 					</div> 
 				</div>";
 		}
@@ -383,7 +383,7 @@ if (isset($_POST['chat_leer'])) {
 			}else{
 				$fecha = $row['fecha_corta'];
 			}
-			echo "<div iduser='" . $row['emisor'] . "' idchat='" . $row['idchat'] . "' nombre='" . $row['nombre'] . " " . $row['apellidos'] . "' img='" . $row['archivo'] . "' fecha='" . $fecha . "' >" . $row['mensaje'] . "</div>";
+			echo "<div iduser='" . (int)$row['emisor'] . "' idchat='" . (int)$row['idchat'] . "' nombre='" . e($row['nombre'] . ' ' . $row['apellidos']) . "' img='" . e($row['archivo']) . "' fecha='" . e($fecha) . "' >" . e($row['mensaje']) . "</div>";
 		}
 	}
 	db_query("UPDATE chat SET leido = 1 WHERE receptor = ?", array((int)$global_idusuarios), 'i');
@@ -421,7 +421,7 @@ if (isset($_POST['chat_leer_prev'])) {
 				$class = "mensaje_propio";
 			}
 			
-			$msg = "<div idchat='{$row['idchat']}' class='{$class}'><div class='texto'>{$row['mensaje']}<div class='fecha'>{$fecha}</div></div></div>";
+			$msg = "<div idchat='" . (int)$row['idchat'] . "' class='" . e($class) . "'><div class='texto'>" . e($row['mensaje']) . "<div class='fecha'>" . e($fecha) . "</div></div></div>";
 			array_unshift($mensajes, $msg); //con esto el orden se corrige
 		}
 		
@@ -451,7 +451,7 @@ if (isset($_POST['chat_contactos'])) {
 		if(mysqli_num_rows($result)>0){
 			echo "<ul>";
 			while ($row = mysqli_fetch_assoc($result)) {
-				echo "<li onclick=\"chat_conv_init('" . $row['idusuarios'] . "','" . $row['nombre'] . " " . $row['apellidos'] . "','" . $row['archivo'] . "', 'normal')\"><div class='conectado'></div>" . NombreApellido($row['nombre'] . " " . $row['apellidos']) . "</li>";
+				echo "<li onclick=\"chat_conv_init.apply(null," . e(json_encode(array((int)$row['idusuarios'], $row['nombre'] . ' ' . $row['apellidos'], $row['archivo'], 'normal'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)) . ")\"><div class='conectado'></div>" . e(NombreApellido($row['nombre'] . " " . $row['apellidos'])) . "</li>";
 			}
 			echo "</ul>";
 		}
@@ -471,7 +471,7 @@ if (isset($_POST['chat_contactos'])) {
 		echo "<ul>";
 		if(mysqli_num_rows($result)>0){
 			while ($row = mysqli_fetch_assoc($result)) {
-				echo "<li onclick=\"chat_conv_init('" . $row['idusuarios'] . "','" . $row['nombre'] . " " . $row['apellidos'] . "','" . $row['archivo'] . "', 'normal')\"><div class='desconectado'></div>" . NombreApellido($row['nombre'] . " " . $row['apellidos']) . "</li>";
+				echo "<li onclick=\"chat_conv_init.apply(null," . e(json_encode(array((int)$row['idusuarios'], $row['nombre'] . ' ' . $row['apellidos'], $row['archivo'], 'normal'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT)) . ")\"><div class='desconectado'></div>" . e(NombreApellido($row['nombre'] . " " . $row['apellidos'])) . "</li>";
 			}
 			echo "</ul>";
 		}

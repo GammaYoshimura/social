@@ -18,11 +18,11 @@ $mensaje = "
 <b style=\"color:white;font-size:40px;\">".Sitio."</b><br>
 <div style=\"background-color:white;border-radius:10px;display: inline-block;
 margin: 10px;padding:20px;text-align:left;font-size:15px;\">
-¡Enhorabuena ".$r_user['nombre']."!, has completado con &eacute;xito
+¡Enhorabuena ".e($r_user['nombre'])."!, has completado con &eacute;xito
  el proceso de registro.<br><br>
 <b>Tus datos son:</b><br>
-Nombre: ".$r_user['nombre']." ".$r_user['apellidos']."<br>
-Email: ".$r_user['email']."<br><br>
+Nombre: ".e($r_user['nombre'])." ".e($r_user['apellidos'])."<br>
+Email: ".e($r_user['email'])."<br><br>
 Ahora podr&aacute; disfrutar de ".Sitio.", no esperes m&aacute;s y
  entra ya<br><br>
 <a href=\"http://".Sitio_direccion."\">http://".Sitio_direccion."/</a><br><br>

@@ -22,23 +22,23 @@
 			}
 			
 			 print "
-				<div id='{$r_mensajes['idmps']}' class='mensaje{$nuevo}'>
+				<div id='" . (int)$r_mensajes['idmps'] . "' class='mensaje{$nuevo}'>
 					<div class='encabezado' onclick='MP_toggle(this)'>
 						<div class='img'>
-							<a href='perfil.php?id={$r_mensajes['emisor']}'>
-								<img src='{$r_mensajes['archivo']}'>
+							<a href='perfil.php?id=" . (int)$r_mensajes['emisor'] . "'>
+								<img src='" . e($r_mensajes['archivo']) . "'>
 							</a>
 						</div>
 						<div class='datos'>
-							<div class='nombre'><a class='link' href='perfil.php?id={$r_mensajes['emisor']}'>{$nombre_apellido}</a></div>
-							<div class='fecha'>".utf8_encode($r_mensajes['fechaf'])."</div><br>
-							<div class='resumen'>{$resumen_mp}</div>
+							<div class='nombre'><a class='link' href='perfil.php?id=" . (int)$r_mensajes['emisor'] . "'>" . e($nombre_apellido) . "</a></div>
+							<div class='fecha'>" . e(utf8_encode($r_mensajes['fechaf'])) . "</div><br>
+							<div class='resumen'>" . e($resumen_mp) . "</div>
 						</div>
 					</div>
 					<div class='cuerpo'>
-						<div class='texto'>{$r_mensajes['mp']}</div>
+						<div class='texto'>" . e($r_mensajes['mp']) . "</div>
 						<form action='#' onsubmit='return false'>
-							<input type='hidden' name='receptor' value='{$r_mensajes['emisor']}'>
+							<input type='hidden' name='receptor' value='" . (int)$r_mensajes['emisor'] . "'>
 							<div class='input'>
 								<span>
 									<textarea name='mensaje' class='validable' placeholder='Escribe aqui tu respuesta'></textarea>

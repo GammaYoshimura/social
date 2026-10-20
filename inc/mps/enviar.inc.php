@@ -32,9 +32,9 @@
 		if (!$usuario || !can_view_profile($recipientId)) { http_response_code(404); exit('Destinatario no disponible'); }
 		
 		print "<form action='#' onsubmit='return false'>
-				Destinatario: <img id='receptor_icon' src='{$usuario['archivo']}'>
-				<input id='receptor' name='receptor' class='' value='{$usuario['nombre']} {$usuario['apellidos']}' disabled  size='40'>
-				<input id='receptor_id' name='receptor_id' style='display: none;' value='{$_GET['receptor']}'>";
+				Destinatario: <img id='receptor_icon' src='" . e($usuario['archivo']) . "'>
+				<input id='receptor' name='receptor' class='' value='" . e($usuario['nombre'] . ' ' . $usuario['apellidos']) . "' disabled size='40'>
+				<input id='receptor_id' name='receptor_id' style='display: none;' value='" . (int)$recipientId . "'>";
 	}else{
 		$query=db_query("
 			SELECT idusuarios, nombre, apellidos, archivo
@@ -53,7 +53,7 @@
 				   Destinatario: <img id="receptor_icon">	
 					<div class="input">
 						<span>
-							<input placeholder="Nombre de un amigo" id="receptor" name="receptor" class="validable" type="text" value="<?php echo $_POST['email']; ?>" size='40' autofocus>
+							<input placeholder="Nombre de un amigo" id="receptor" name="receptor" class="validable" type="text" value="<?php echo isset($_POST['email']) && is_string($_POST['email']) ? e($_POST['email']) : ''; ?>" size='40' autofocus>
 						</span>
 					</div>
 				    <input id="receptor_id" name="receptor_id" style="display: none;" /><br>
@@ -63,22 +63,13 @@
 					<script>
 					var receptor_seleccionado=false;
 				    $(function() {
-						var amigos = [
-							<?php
-							$i_temp = 0;
-							while($row=mysqli_fetch_assoc($query)){
-								if ($i_temp != 0)
-									echo ",";
-								
-								print "{
-									value: '{$row['idusuarios']}',
-									label: '".NombreApellido($row['nombre']." ".$row['apellidos'])."',
-									icon: '".$row['archivo']."'
-								}";
-								$i_temp++;
-							}
-							?>
-						];
+						<?php
+						$friends = array();
+						while ($row = mysqli_fetch_assoc($query)) {
+							$friends[] = array('value' => (int)$row['idusuarios'], 'label' => NombreApellido($row['nombre'] . ' ' . $row['apellidos']), 'icon' => $row['archivo']);
+						}
+						?>
+						var amigos = <?php echo json_encode($friends, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
 						
 						$( "#receptor" ).autocomplete({
 							source: amigos,
@@ -97,13 +88,10 @@
 								return false;
 							}
 						}) .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
-							return $( "<li>" )
-							.append( 
-								"<a>"+
-									"<img src='"+ item.icon + "' class='autocomplete_img'>"+
-										"<div class='autocomplete_label'>" + item.label + "</div>"+
-									"</a>" )
-							.appendTo( ul );
+							var link = $("<a>");
+							$("<img>").attr("src", item.icon).addClass("autocomplete_img").appendTo(link);
+							$("<div>").addClass("autocomplete_label").text(item.label).appendTo(link);
+							return $("<li>").append(link).appendTo(ul);
 						};
 					});
 					

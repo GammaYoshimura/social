@@ -13,20 +13,20 @@
 			$resumen_mp = $r_mensajes['mp'];
 		}
 		
-		 print "<div class='mensaje' id='{$r_mensajes['idmps']}'>
+		 print "<div class='mensaje' id='" . (int)$r_mensajes['idmps'] . "'>
 					<div onclick='MP_toggle(this)' class='encabezado'>
 						<div class='img'>
-							<a href='perfil.php?id={$r_mensajes['receptor']}'>
-								<img src='{$r_mensajes['archivo']}'>
+							<a href='perfil.php?id=" . (int)$r_mensajes['receptor'] . "'>
+								<img src='" . e($r_mensajes['archivo']) . "'>
 							</a>
 						</div>
 						<div class='datos'>
-							<div class='nombre'><a href='perfil.php?id={$r_mensajes['receptor']}'>{$nombre_apellido}</a></div>
-							<div class='fecha'>".utf8_encode($r_mensajes['fechaf'])."</div><br>
-							<div class='resumen'>{$resumen_mp}</div>
+							<div class='nombre'><a href='perfil.php?id=" . (int)$r_mensajes['receptor'] . "'>" . e($nombre_apellido) . "</a></div>
+							<div class='fecha'>" . e(utf8_encode($r_mensajes['fechaf'])) . "</div><br>
+							<div class='resumen'>" . e($resumen_mp) . "</div>
 						</div>
 					</div>
-					<div class='texto'>{$r_mensajes['mp']}</div>
+					<div class='texto'>" . e($r_mensajes['mp']) . "</div>
 				</div>";
 	}
 	echo "</div>";

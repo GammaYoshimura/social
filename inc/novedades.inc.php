@@ -8,17 +8,16 @@ $q_users = db_query("SELECT MAX(novedades.fecha) as fecha,propietario, idusuario
 									WHERE (? = user1 AND user2 = idusuarios AND user2 = propietario) OR
 										(? = user2 AND user1 = idusuarios AND user1 = propietario)
 									GROUP BY propietario ORDER BY fecha DESC", array((int)$global_idusuarios, (int)$global_idusuarios), 'ii');
-echo mysqli_error($link);
 
 if(mysqli_num_rows($q_users)>0){
 	echo "<div id='seccion_novedades'>";
 	while ($r_users = mysqli_fetch_assoc($q_users)) {
 		print "	<div class='user'>
 					<div class='encabezado' style='display: inline-block;'> 
-						<img src='{$r_users['archivo']}' class='imagen_perfil'>
+						<img src='" . e($r_users['archivo']) . "' class='imagen_perfil'>
 						<div style='display: inline-block;'> 
 							<div> 
-								<div class='foto_come_titu'><a href='perfil.php?id={$r_users['idusuarios']}'>{$r_users['nombre']} {$r_users['apellidos']}</a></div> 
+								<div class='foto_come_titu'><a href='perfil.php?id=" . (int)$r_users['idusuarios'] . "'>" . e($r_users['nombre'] . ' ' . $r_users['apellidos']) . "</a></div> 
 							</div>
 						</div>
 					</div>
@@ -34,12 +33,12 @@ if(mysqli_num_rows($q_users)>0){
 				if($r_novedades['visitante'] != $global_idusuarios){
 					$q_novedad = db_query("SELECT * FROM usuarios WHERE idusuarios = ?", array((int)$r_novedades['visitante']), 'i');
 					$r_novedad = mysqli_fetch_assoc($q_novedad);
-					echo "agreg&oacute; a " . NombreApellido($r_novedad['nombre']." ".$r_novedad['apellidos']);
+					echo "agreg&oacute; a " . e(NombreApellido($r_novedad['nombre']." ".$r_novedad['apellidos']));
 				}else{
 					echo "es ahora tu amigo!";
 				}
 				
-				echo " <div class='fecha'>" . fecha($r_novedades['fecha'], "now") . "</div>";
+				echo " <div class='fecha'>" . e(fecha($r_novedades['fecha'], "now")) . "</div>";
 			}
 	
 			if ($r_novedades['tipo'] == "subida_fotos") {
@@ -50,9 +49,9 @@ if(mysqli_num_rows($q_users)>0){
 				}
 				$q_novedad = db_query("SELECT * FROM fotos WHERE uploader = ? ORDER BY idfotos DESC LIMIT ?", array((int)$r_novedades['propietario'], (int)$limite), 'ii');
 				if (mysqli_num_rows($q_novedad) > 0) {
-					echo "subi&oacute; {$r_novedades['datos']} fotos <div class='fecha'>" . fecha($r_novedades['fecha'], "now") . "</div><div class='imagenes'>";
+					echo "subi&oacute; " . (int)$r_novedades['datos'] . " fotos <div class='fecha'>" . e(fecha($r_novedades['fecha'], "now")) . "</div><div class='imagenes'>";
 					while ($r_novedad = mysqli_fetch_assoc($q_novedad)) {
-						echo "<a href='fotos.php?iduser={$r_users['idusuarios']}&idalbum=subidas&idfotos={$r_novedad['idfotos']}'><img src='" . $r_novedad['archivo'] . "' class='imagen'></a>";
+						echo "<a href='fotos.php?iduser=" . (int)$r_users['idusuarios'] . "&amp;idalbum=subidas&amp;idfotos=" . (int)$r_novedad['idfotos'] . "'><img src='" . e($r_novedad['archivo']) . "' class='imagen'></a>";
 					}
 					echo "</div>";
 				}
@@ -60,19 +59,18 @@ if(mysqli_num_rows($q_users)>0){
 	
 			if ($r_novedades['tipo'] == "foto_principal") {
 				$q_novedad = db_query("SELECT * FROM fotos, usuarios WHERE idfotos = ? AND idusuarios = ?", array((int)$r_novedades['datos'], (int)$r_novedades['propietario']), 'ii');
-				echo mysqli_error($link);
 				$r_novedad = mysqli_fetch_assoc($q_novedad);					
-				echo "cambi&oacute; su foto principal <div class='fecha'>" . fecha($r_novedades['fecha'], "now") . "</div><br><img src='" . $r_novedad['archivo'] . "' style='max-height:100px'>";
+				echo "cambi&oacute; su foto principal <div class='fecha'>" . e(fecha($r_novedades['fecha'], "now")) . "</div><br><img src='" . e($r_novedad['archivo']) . "' style='max-height:100px'>";
 			}
 	
 			if ($r_novedades['tipo'] == "estado") {
-				echo "cambi&oacute; su estado a <i>" . $r_novedades['datos'] . "</i> <div class='fecha'>" . fecha($r_novedades['fecha'], "now") . "</div>";
+				echo "cambi&oacute; su estado a <i>" . e($r_novedades['datos']) . "</i> <div class='fecha'>" . e(fecha($r_novedades['fecha'], "now")) . "</div>";
 			}
 	
 			if ($r_novedades['tipo'] == "tablon") {
 				$q_novedad = db_query("SELECT * FROM usuarios WHERE idusuarios = ? OR idusuarios = ?", array((int)$r_novedades['propietario'], (int)$r_novedades['visitante']), 'ii');
 				$r_novedad = mysqli_fetch_assoc($q_novedad);
-				echo NombreApellido($r_novedad['nombre']." ".$r_novedad['apellidos']) . " coment&oacute; su tabl&oacute;n <div class='fecha'>" . fecha($r_novedades['fecha'], "now") . "</div>";
+				echo e(NombreApellido($r_novedad['nombre']." ".$r_novedad['apellidos'])) . " coment&oacute; su tabl&oacute;n <div class='fecha'>" . e(fecha($r_novedades['fecha'], "now")) . "</div>";
 			}
 			echo "</div>";
 		}

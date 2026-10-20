@@ -26,15 +26,15 @@ if (mysqli_num_rows($q_peticiones) > 0) {
 		//print_r($row);
 		print "
 			<div class='peticion_amistad'>
-					<img src='{$r_peticiones['archivo']}'>
-					<div class='nombre'><a class='link' href='perfil.php?id={$r_peticiones['idusuarios']}'>{$r_peticiones['nombre']} {$r_peticiones['apellidos']}</a> te ha enviado una solicitud de amistad</div>
-					<div class='fecha'>{$r_peticiones['fechaf']}</div><br>
+					<img src='" . e($r_peticiones['archivo']) . "'>
+					<div class='nombre'><a class='link' href='perfil.php?id=" . (int)$r_peticiones['idusuarios'] . "'>" . e($r_peticiones['nombre'] . ' ' . $r_peticiones['apellidos']) . "</a> te ha enviado una solicitud de amistad</div>
+					<div class='fecha'>" . e($r_peticiones['fechaf']) . "</div><br>
 					<div class='acciones'>
 						<div class='texto' onclick=''>
-							<button type='button' class='azul' onclick=\"peticion_aceptar({$r_peticiones['idusuarios']})\"><span><b>Aceptar</b></span></button>
+							<button type='button' class='azul' onclick=\"peticion_aceptar(" . (int)$r_peticiones['idusuarios'] . ")\"><span><b>Aceptar</b></span></button>
 						</div>
 						<div class='texto'>
-							<button type='button' class='rojo' onclick=\"peticion_ignorar({$r_peticiones['idusuarios']})\"><span><b>Ignorar</b></span></button>
+							<button type='button' class='rojo' onclick=\"peticion_ignorar(" . (int)$r_peticiones['idusuarios'] . ")\"><span><b>Ignorar</b></span></button>
 						</div>
 					</div>
 			</div>

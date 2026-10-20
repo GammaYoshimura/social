@@ -45,17 +45,17 @@ require ("inc/chat.php");
 
 			##### ENCABEZADO
 			if ($_GET['idalbum'] == "subidas") {
-				echo "<h2 style='margin-bottom:0px;'>Fotos subidas por " . $row['nombre'] . "</h2>";
+				echo "<h2 style='margin-bottom:0px;'>Fotos subidas por " . e($row['nombre']) . "</h2>";
 			} elseif ($_GET['idalbum'] == "etiquetadas") {
-				echo "<h2 style='margin-bottom:0px;'>Fotos etiquetadas de " . $row['nombre'] . "</h2>";
+				echo "<h2 style='margin-bottom:0px;'>Fotos etiquetadas de " . e($row['nombre']) . "</h2>";
 			} else {
-				echo "<h2 style='margin-bottom:0px;'>Fotos del album " . $row['album'] . " de " . $row['nombre'] . "</h2>";
+				echo "<h2 style='margin-bottom:0px;'>Fotos del album " . e($row['album']) . " de " . e($row['nombre']) . "</h2>";
 			}
 			
 			##### MOSTRAR FOTOS
 			mysqli_data_seek($fotos, 0);
 			while ($row = mysqli_fetch_assoc($fotos)) {
-				echo "<a href='fotos.php?iduser=" . $row['idusuarios'] . "&idalbum=" . $_GET['idalbum'] . "&idfotos=" . $row['idfotos'] . "' class='album_contenido'><img class='album_contenido' style='' alt='' src='{$row['archivo']}' /><br></a>";
+				echo "<a href='fotos.php?iduser=" . (int)$row['idusuarios'] . "&amp;idalbum=" . rawurlencode($albumType) . "&amp;idfotos=" . (int)$row['idfotos'] . "' class='album_contenido'><img class='album_contenido' alt='' src='" . e($row['archivo']) . "' /><br></a>";
 			}
 		} else {
 			echo "No has subido ninguna foto";
@@ -85,21 +85,21 @@ require ("inc/chat.php");
 				?>
 		<script>
 			//Declarando variables
-			iduser = "<?php echo $_GET['iduser']; ?>";
-			idalbum = "<?php echo $_GET['idalbum']; ?>";
-			page = "<?php echo $_GET['page']; ?>";
+			iduser = <?php echo (int)$ownerId; ?>;
+			idalbum = <?php echo json_encode($albumType, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>;
+			page = <?php echo (int)$page; ?>;
 		</script>
 		
 		<?php
 		echo "<div id='barra_navegacion'>";
 		if ($npage_initial > 1) {
-			echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"location.href='" . $navegar_primera . "'\">";
-			echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"location.href='" . $navegar_anterior . "'\">";
+			echo "<img class='flecha_back_top' src='css/flechas/flecha_left_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_primera)) . "\">";
+			echo "<img class='flecha_back' src='css/flechas/flecha_left.jpg' onclick=\"location.href=" . e(json_encode($navegar_anterior)) . "\">";
 		}
 		echo "<div class='texto'>" . $npage_initial . " de " . $npage_max . "</div>";
 		if ($npage_initial < $npage_max) {
-			echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"location.href='" . $navegar_siguiente . "'\">";
-			echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"location.href='" . $navegar_ultima . "'\">";
+			echo "<img class='flecha_next' src='css/flechas/flecha_right.jpg' onclick=\"location.href=" . e(json_encode($navegar_siguiente)) . "\">";
+			echo "<img class='flecha_next_top' src='css/flechas/flecha_right_top.jpg' onclick=\"location.href=" . e(json_encode($navegar_ultima)) . "\">";
 		}
 		echo "</div>";
 		?>

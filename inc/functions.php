@@ -53,6 +53,10 @@ function hash_password($plainText) {
 	return password_hash($plainText, PASSWORD_DEFAULT);
 }
 
+function e($value) {
+	return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+
 function NombreApellido($input, $maximo = 18) {//si no se pasa segudo parametro sera X por defecto
 	$minimo = 10;
 	//Posicion minima del espacio, evita nombres cortos
@@ -93,10 +97,8 @@ function limpia_texto($string) {
 function error_mysql($p1 = "exit") {
 	global $link;
 	if (mysqli_errno($link)) {
-		echo "No error: " . mysqli_errno($link) . " -> " . mysqli_error($link) . "<br>";
-		if ($p1 == "exit") {
-			die("Script detenido por fallo PHP");
-		}
+		error_log("Database error " . mysqli_errno($link) . ": " . mysqli_error($link));
+		if ($p1 == "exit") exit("Se ha producido un error");
 	}
 }
 
@@ -199,7 +201,7 @@ function head($title = Sitio) {
 		echo "chat_estado=0;";
 	}
 	print "</script>
-				<title>{$title}</title>";
+				<title>" . e($title) . "</title>";
 }
 
 // Pasamos el ID de la provincia y nos devuelve el nombre
@@ -297,6 +299,10 @@ function novedades($novedad){
 }
 
 function email_send($destinatario_name, $destinatario_email, $titulo, $mensaje){
+	$destinatario_name = preg_replace('/[\r\n]+/', ' ', (string)$destinatario_name);
+	$titulo = preg_replace('/[\r\n]+/', '', (string)$titulo);
+	if (!filter_var($destinatario_email, FILTER_VALIDATE_EMAIL)) return false;
+	$destinatario_email = trim($destinatario_email);
 	 $TextMessage = strip_tags(nl2br($mensaje), "<br>");
 	 $HTMLMessage = $mensaje;
 	 	

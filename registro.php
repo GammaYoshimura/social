@@ -35,7 +35,7 @@ head("Registro");
 							<td>
 							<div class="input">
 								<span>
-									<input id="Nombre" name="Nombre" class="validable" type="text" value="<?php echo $_POST['Nombre']; ?>" placeholder="Nombre">
+									<input id="Nombre" name="Nombre" class="validable" type="text" value="<?php echo isset($_POST['Nombre']) && is_string($_POST['Nombre']) ? e($_POST['Nombre']) : ''; ?>" placeholder="Nombre">
 								</span>
 							</div></td>
 						</tr>
@@ -44,7 +44,7 @@ head("Registro");
 							<td>
 							<div class="input">
 								<span>
-									<input id="Apellidos" name="Apellidos" class="validable" type="text" value="<?php echo $_POST['Apellidos']; ?>" placeholder="Apellidos">
+									<input id="Apellidos" name="Apellidos" class="validable" type="text" value="<?php echo isset($_POST['Apellidos']) && is_string($_POST['Apellidos']) ? e($_POST['Apellidos']) : ''; ?>" placeholder="Apellidos">
 								</span>
 							</div></td>
 						</tr>
@@ -62,7 +62,7 @@ head("Registro");
 							<td>
 							<div class="input">
 								<span>
-									<input id="Email" name="Email" class="validable" type="text" value="<?php echo $_POST['Email']; ?>" placeholder="Email">
+									<input id="Email" name="Email" class="validable" type="text" value="<?php echo isset($_POST['Email']) && is_string($_POST['Email']) ? e($_POST['Email']) : ''; ?>" placeholder="Email">
 								</span>
 							</div></td>
 
@@ -72,8 +72,8 @@ head("Registro");
 							<td>
 								<div class="input">
 									<span>
-										<input id="nacimiento" name="nacimiento" class="validable" type="text" value="<?php echo $_POST['nacimiento']; ?>">
-										<input id="nacimiento_hidden" name="nacimiento_hidden" type="text" style="display:none;" value="<?php echo $_POST['nacimiento_hidden']; ?>" placeholder="Fecha nacimiento">
+										<input id="nacimiento" name="nacimiento" class="validable" type="text" value="<?php echo isset($_POST['nacimiento']) && is_string($_POST['nacimiento']) ? e($_POST['nacimiento']) : ''; ?>">
+										<input id="nacimiento_hidden" name="nacimiento_hidden" type="text" style="display:none;" value="<?php echo isset($_POST['nacimiento_hidden']) && is_string($_POST['nacimiento_hidden']) ? e($_POST['nacimiento_hidden']) : ''; ?>" placeholder="Fecha nacimiento">
 									</span>
 								</div>
 							</td>

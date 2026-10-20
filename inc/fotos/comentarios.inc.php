@@ -14,7 +14,7 @@
 		<div id="comentarios"></div>
 		<script>
 			$(window).load(function() {
-				foto_leer_comentarios(<?php echo $r_fotos['idfotos']; ?>,1);
+				foto_leer_comentarios(<?php echo (int)$r_fotos['idfotos']; ?>,1);
 			});
 		</script>
 	</div>
