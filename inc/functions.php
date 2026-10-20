@@ -42,6 +42,17 @@ function can_view_profile($profileId) {
 	return $friendship && mysqli_num_rows($friendship) === 1;
 }
 
+function verify_password($plainText, $storedHash) {
+	if (!is_string($plainText) || !is_string($storedHash)) return false;
+	$info = password_get_info($storedHash);
+	if (!empty($info['algo'])) return password_verify($plainText, $storedHash);
+	return hash_equals($storedHash, sha1($plainText));
+}
+
+function hash_password($plainText) {
+	return password_hash($plainText, PASSWORD_DEFAULT);
+}
+
 function NombreApellido($input, $maximo = 18) {//si no se pasa segudo parametro sera X por defecto
 	$minimo = 10;
 	//Posicion minima del espacio, evita nombres cortos

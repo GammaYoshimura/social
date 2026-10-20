@@ -1,12 +1,11 @@
 <?php
 ########	ACTIVAR CUENTA
-if($_GET['activar_cuenta']){
-	$sql = "SELECT * FROM usuarios WHERE activacion='{$_GET['codigo']}'";
-	$q_user = mysqli_query($link, $sql);
+if(isset($_GET['activar_cuenta'], $_GET['codigo']) && is_string($_GET['codigo'])) {
+	$q_user = db_query("SELECT * FROM usuarios WHERE activacion = ?", array($_GET['codigo']), 's');
 	
-	if (mysqli_num_rows($q_user) == 1) {
-		mysqli_query($link, "UPDATE usuarios SET activacion = '1' WHERE activacion='{$_GET['codigo']}'");
+	if ($q_user && mysqli_num_rows($q_user) == 1) {
 		$r_user = mysqli_fetch_assoc($q_user);		
+		db_query("UPDATE usuarios SET activacion = 1 WHERE idusuarios = ? AND activacion = ?", array((int)$r_user['idusuarios'], $_GET['codigo']), 'is');
 		
 		$destinatario_email = $r_user['email'];
 		$destinatario_name = $r_user['nombre']." ".$r_user['apellidos'];

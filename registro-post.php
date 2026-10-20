@@ -34,7 +34,7 @@ if(	(!$_POST['Nombre'] OR !$_POST['Apellidos'] OR !$_POST['contrasenia'] OR !$_P
 		$destinatario_name = $_POST['Nombre']." ".$_POST['Apellidos'];
 		$titulo = "Registro - ".Sitio;
 		
-		$codigo_activacion = rand(100000000, 999999999);
+		$codigo_activacion = random_int(100000000, 999999999);
 		
 // No separar del borde
 $mensaje = "
@@ -58,7 +58,7 @@ http://".Sitio_direccion."/otros.php?activar_cuenta=1&amp;codigo=".$codigo_activ
 		}
 		
 		db_query("INSERT INTO usuarios (nombre, apellidos, fnac, password, email, fecha_reg, sexo, idfotos_princi, provincia, activacion)
-			VALUES (?, ?, ?, ?, ?, now(), ?, ?, ?, ?)", array($_POST['Nombre'], $_POST['Apellidos'], $_POST['nacimiento_hidden'], sha1($_POST['contrasenia']), $_POST['Email'], $_POST['Sexo'], $img_princ, $_POST['Provincia'], $codigo_activacion), 'ssssssisi');
+			VALUES (?, ?, ?, ?, ?, now(), ?, ?, ?, ?)", array($_POST['Nombre'], $_POST['Apellidos'], $_POST['nacimiento_hidden'], hash_password($_POST['contrasenia']), $_POST['Email'], $_POST['Sexo'], $img_princ, $_POST['Provincia'], $codigo_activacion), 'ssssssisi');
 		error_mysql();
 		?>
 		<div class="centrar">

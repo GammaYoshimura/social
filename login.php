@@ -13,7 +13,11 @@ if(isset($_POST['email'], $_POST['password']) && is_string($_POST['email']) && i
 	$r_login = $login ? mysqli_fetch_assoc($login) : false;
 
 	//LOGIN OK
-	if($r_login && hash_equals($r_login['password'], sha1($_POST['password']))){
+	if($r_login && verify_password($_POST['password'], $r_login['password'])){
+		$passwordInfo = password_get_info($r_login['password']);
+		if (empty($passwordInfo['algo'])) {
+			db_query("UPDATE usuarios SET password = ? WHERE idusuarios = ?", array(hash_password($_POST['password']), (int)$r_login['idusuarios']), 'si');
+		}
 		$codigo_temp = bin2hex(random_bytes(16));
 		db_query("UPDATE usuarios SET idsesion = ? WHERE idusuarios = ?", array($codigo_temp, (int)$r_login['idusuarios']), 'si');
 		

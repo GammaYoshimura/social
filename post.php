@@ -491,10 +491,13 @@ if ($_POST['cambio_email']) {
 	if($_POST['email'] AND $_POST['email_new'] AND $_POST['pass']){
 		$patron = '/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/';
 		if (preg_match($patron, $_POST['email_new'])) {
-			$password = sha1($_POST['pass']);
-			$query = db_query("UPDATE usuarios SET email = ? WHERE idusuarios = ? AND email = ? AND password = ?", array($_POST['email_new'], (int)$global_idusuarios, $_POST['email'], $password), 'siss');
-			if(mysqli_affected_rows($link)!=1){
+			$current = db_query("SELECT password FROM usuarios WHERE idusuarios = ? AND email = ?", array((int)$global_idusuarios, $_POST['email']), 'is');
+			$currentUser = $current ? mysqli_fetch_assoc($current) : false;
+			if (!$currentUser || !verify_password($_POST['pass'], $currentUser['password'])) {
 				echo "Los datos introducidos no son correctos";
+			} else {
+				db_query("UPDATE usuarios SET email = ? WHERE idusuarios = ? AND email = ?", array($_POST['email_new'], (int)$global_idusuarios, $_POST['email']), 'sis');
+				if(mysqli_affected_rows($link) != 1) echo "No se pudo actualizar el email";
 			}
 		}else{
 			echo "El email nuevo no tiene un formato correcto";
@@ -509,13 +512,12 @@ if ($_POST['cambio_pass']) {
 	//print_r($_POST);
 	if($_POST['pass'] AND $_POST['pass_new'] AND $_POST['pass_new2']){
 		if($_POST['pass_new'] == $_POST['pass_new2']){
-			$password_old = sha1($_POST['pass']);
-			$password_new = sha1($_POST['pass_new']);
-			
-			$query = db_query("UPDATE usuarios SET password = ? WHERE idusuarios = ? AND password = ?", array($password_new, (int)$global_idusuarios, $password_old), 'sis');
-			
-			if(mysqli_affected_rows($link)!=1){
+			$current = db_query("SELECT password FROM usuarios WHERE idusuarios = ?", array((int)$global_idusuarios), 'i');
+			$currentUser = $current ? mysqli_fetch_assoc($current) : false;
+			if (!$currentUser || !verify_password($_POST['pass'], $currentUser['password'])) {
 				echo "La contraseña actual no es correcta";
+			} else {
+				db_query("UPDATE usuarios SET password = ? WHERE idusuarios = ?", array(hash_password($_POST['pass_new']), (int)$global_idusuarios), 'si');
 			}
 		}else{
 			echo "Las contraseñas nuevas no coinciden";
