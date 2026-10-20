@@ -1,5 +1,6 @@
 .*
 .settings
+inc/config.local.php
 .*user_fotos
 user_fotos/*
 *Thumbs.db

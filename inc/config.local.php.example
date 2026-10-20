@@ -1,0 +1,5 @@
+<?php
+define('MySQL_IP', '127.0.0.1');
+define('MySQL_USER', 'social_app');
+define('MySQL_PASS', 'replace-with-a-long-random-password');
+define('MySQL_BD', 'social');

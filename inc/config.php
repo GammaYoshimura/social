@@ -10,17 +10,25 @@ define("Sitio_Largo", "Social Networks");
 //Direccion de la web
 define("Sitio_direccion", "127.0.0.1/social");
 
-//IP del servidor MySQL
-define("MySQL_IP", "127.0.0.1");
+// Las credenciales se proporcionan por entorno o en inc/config.local.php,
+// que se mantiene fuera del repositorio.
+if (is_file(__DIR__ . '/config.local.php')) {
+	require_once __DIR__ . '/config.local.php';
+}
 
-//Usuario del servidor MySQL
-define("MySQL_USER", "root");
-
-//Contraseña del servidor MySQL
-define("MySQL_PASS", "");
-
-//Base de datos del servidor MySQL
-define("MySQL_BD", "social");
+$mysqlHost = getenv('SOCIAL_DB_HOST');
+$mysqlUser = getenv('SOCIAL_DB_USER');
+$mysqlPassword = getenv('SOCIAL_DB_PASSWORD');
+$mysqlDatabase = getenv('SOCIAL_DB_NAME');
+if ($mysqlHost === false && defined('MySQL_IP')) $mysqlHost = MySQL_IP;
+if ($mysqlUser === false && defined('MySQL_USER')) $mysqlUser = MySQL_USER;
+if ($mysqlPassword === false && defined('MySQL_PASS')) $mysqlPassword = MySQL_PASS;
+if ($mysqlDatabase === false && defined('MySQL_BD')) $mysqlDatabase = MySQL_BD;
+if (!$mysqlHost || !$mysqlUser || !$mysqlPassword || !$mysqlDatabase) {
+	http_response_code(500);
+	error_log('Database configuration is missing or incomplete.');
+	exit('Servicio no disponible');
+}
 
 //Email que se usara como emisor de los correos
 define("Email_Address", "javi.and.friends@gmail.com");
@@ -28,13 +36,17 @@ define("Email_Address", "javi.and.friends@gmail.com");
 
 
 //CONEXION BBDD
-$link = mysqli_connect(MySQL_IP, MySQL_USER, MySQL_PASS);
-if (!$link)
-	die("Error al conectar con el MySQL");
-
-$mysqli_db = mysqli_select_db($link, MySQL_BD);
-if (!$mysqli_db)
-	die("Error al seleccionar la base de datos");
+$link = mysqli_connect($mysqlHost, $mysqlUser, $mysqlPassword, $mysqlDatabase);
+if (!$link) {
+	http_response_code(500);
+	error_log('Database connection failed: ' . mysqli_connect_error());
+	exit('Servicio no disponible');
+}
+if (!mysqli_set_charset($link, 'utf8mb4')) {
+	http_response_code(500);
+	error_log('Could not set database character set.');
+	exit('Servicio no disponible');
+}
 
 // CONTADOR DE TIEMPO DE EJECUCION
 /*$tiempo_inicio = microtime(true);
