@@ -13,7 +13,11 @@ require ("upload/subida.html");
 	<div class="barra_full">
 	<div class="marco">
 		<?php
-		if ($_POST['subir_fotos']) {
+		if (isset($_POST['subir_fotos'])) {
+			if (!isset($_POST['csrf_token'], $_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token']) || !is_string($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+				http_response_code(403);
+				exit('Solicitud no válida');
+			}
 			$count = 0;
 			foreach ($_POST as $name => $value) {
 				if (preg_match("/tmpname/", $name, $algohaykeponer) == 1) {
@@ -84,6 +88,7 @@ require ("upload/subida.html");
 			<br />
 			<div id="uploader"></div>
 			<input type="hidden" name="subir_fotos" value="1" />
+			<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>" />
 			<button type='submit' class="azul"><span><b>Subir fotos</b></span></button>
 		</form>
 

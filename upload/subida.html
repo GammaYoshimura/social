@@ -12,6 +12,7 @@
 			// General settings
 			runtimes : 'html5,flash,silverlight,html4',
 			url : 'upload/upload.php',
+			multipart_params : { csrf_token: <?php echo json_encode($_SESSION['csrf_token']); ?> },
 			max_file_size : '10mb',
 			chunk_size : '1mb',
 			unique_names : true,
@@ -22,7 +23,7 @@
 			// Specify what files to browse for
 			filters : [{
 				title : "Image files",
-				extensions : "jpg,gif,png,jpeg,bmp"
+				extensions : "jpg,jpeg,png"
 			}],
 
 			// Flash settings

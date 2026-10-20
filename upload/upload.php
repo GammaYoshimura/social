@@ -1,146 +1,149 @@
 <?php
-/**
-* upload.php
-*
-* Copyright 2009, Moxiecode Systems AB
-* Released under GPL License.
-*
-* License: http://www.plupload.com/license
-* Contributing: http://www.plupload.com/contributing
-*/
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('X-Content-Type-Options: nosniff');
 
-// HTTP headers for no cache etc
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
-	//Obtenemos los datos del usuario
-	session_start();
-	$ruta="../"; //Evitamos problemas al cargar ficheros desde el config
-	require('../inc/config.php');
-	$login=mysqli_query($link,"SELECT * FROM usuarios WHERE idsesion='".$_SESSION['idsesion']."'");
-	$usuario=mysqli_fetch_assoc($login);
-	$global_idusuarios=$usuario['idusuarios'];
-	$global_nombre=$usuario['nombre'];
-	$global_apellidos=$usuario['apellidos'];
-	$global_nombrefull=$usuario['nombre']." ".$usuario['apellidos'];
-	$global_idsesion=$usuario['idsesion'];
-
-// Settings
-$targetDir = "../user_fotos/".$global_idusuarios."-".limpia_texto($global_nombrefull);
-
-$cleanupTargetDir = true; // Remove old files
-$maxFileAge = 5 * 3600; // Temp file age in seconds
-
-// 5 minutes execution time
-set_time_limit(5 * 60);
-
-// Uncomment this one to fake upload time
-// usleep(5000);
-
-// Get parameters
-$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
-$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
-$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
-
-// Clean the fileName for security reasons
-$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
-
-// Make sure the fileName is unique but only if chunking is disabled
-if ($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName)) {
-	$ext = strrpos($fileName, '.');
-	$fileName_a = substr($fileName, 0, $ext);
-	$fileName_b = substr($fileName, $ext);
-
-	$count = 1;
-	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
-		$count++;
-
-	$fileName = $fileName_a . '_' . $count . $fileName_b;
+function upload_error($message, $status = 400) {
+	http_response_code($status);
+	echo json_encode(array('jsonrpc' => '2.0', 'error' => array('code' => $status, 'message' => $message), 'id' => 'id'));
+	exit;
 }
 
-$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+session_start();
+$ruta = '../';
+require('../inc/config.php');
 
-// Create target dir
-if (!file_exists($targetDir)){
-	if(!mkdir($targetDir, 0777, true)){
-    	die('Fallo al crear carpetas...');
-	}
+if (!isset($_SESSION['idsesion']) || !is_string($_SESSION['idsesion']) || $_SESSION['idsesion'] === '') {
+	upload_error('Authentication required', 401);
+}
+if (!isset($_SESSION['csrf_token'], $_REQUEST['csrf_token']) || !is_string($_SESSION['csrf_token']) || !is_string($_REQUEST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_REQUEST['csrf_token'])) {
+	upload_error('Invalid request token', 403);
 }
 
-// Remove old temp files
-if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
-	while (($file = readdir($dir)) !== false) {
-		$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+$stmt = mysqli_prepare($link, 'SELECT idusuarios, nombre, apellidos FROM usuarios WHERE idsesion = ? AND activacion = 1');
+if (!$stmt) {
+	upload_error('Upload unavailable', 500);
+}
+mysqli_stmt_bind_param($stmt, 's', $_SESSION['idsesion']);
+if (!mysqli_stmt_execute($stmt)) {
+	mysqli_stmt_close($stmt);
+	upload_error('Upload unavailable', 500);
+}
+mysqli_stmt_bind_result($stmt, $userId, $firstName, $lastName);
+if (!mysqli_stmt_fetch($stmt)) {
+	mysqli_stmt_close($stmt);
+	upload_error('Authentication required', 401);
+}
+mysqli_stmt_close($stmt);
 
-		// Remove temp file if it is older than the max age and is not the current file
-		if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {
-			@unlink($tmpfilePath);
-		}
-	}
+$maxBytes = 10 * 1024 * 1024;
+$chunk = isset($_REQUEST['chunk']) ? filter_var($_REQUEST['chunk'], FILTER_VALIDATE_INT) : 0;
+$chunks = isset($_REQUEST['chunks']) ? filter_var($_REQUEST['chunks'], FILTER_VALIDATE_INT) : 0;
+if ($chunk === false || $chunks === false || $chunk < 0 || $chunks < 0 || $chunks > 10 || ($chunks > 0 && $chunk >= $chunks)) {
+	upload_error('Invalid upload chunk');
+}
 
-	closedir($dir);
-} else
-	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+$fileName = isset($_REQUEST['name']) && is_string($_REQUEST['name']) ? $_REQUEST['name'] : '';
+if (!preg_match('/\A[A-Za-z0-9_-]{1,100}\.(?:jpe?g|png)\z/i', $fileName)) {
+	upload_error('Only JPG and PNG images are accepted');
+}
 
+$targetDir = dirname(__DIR__) . '/user_fotos/' . (int)$userId . '-' . limpia_texto($firstName . ' ' . $lastName);
+if (!is_dir($targetDir) && !mkdir($targetDir, 0750, true)) {
+	upload_error('Upload unavailable', 500);
+}
+if (!is_writable($targetDir)) {
+	upload_error('Upload unavailable', 500);
+}
 
-// Look for the content type header
-if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
-	$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
-
-if (isset($_SERVER["CONTENT_TYPE"]))
-	$contentType = $_SERVER["CONTENT_TYPE"];
-
-// Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
-if (strpos($contentType, "multipart") !== false) {
-	if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
-		// Open temp file
-		$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
-		if ($out) {
-			// Read binary input stream and append it to temp file
-			$in = fopen($_FILES['file']['tmp_name'], "rb");
-
-			if ($in) {
-				while ($buff = fread($in, 4096))
-					fwrite($out, $buff);
-			} else
-				die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-			fclose($in);
-			fclose($out);
-			@unlink($_FILES['file']['tmp_name']);
-		} else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-	} else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+$partPath = $targetDir . DIRECTORY_SEPARATOR . $fileName . '.part';
+$chunkSize = 0;
+if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+	$chunkSize = filesize($_FILES['file']['tmp_name']);
+	$inputPath = $_FILES['file']['tmp_name'];
 } else {
-	// Open temp file
-	$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
-	if ($out) {
-		// Read binary input stream and append it to temp file
-		$in = fopen("php://input", "rb");
+	$inputPath = 'php://input';
+}
+if ($chunkSize > $maxBytes) {
+	@unlink($partPath);
+	upload_error('Image exceeds the 10 MB limit', 413);
+}
 
-		if ($in) {
-			while ($buff = fread($in, 4096))
-				fwrite($out, $buff);
-		} else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-
+$mode = ($chunks === 0 || $chunk === 0) ? 'wb' : 'ab';
+$out = @fopen($partPath, $mode);
+$in = @fopen($inputPath, 'rb');
+if (!$out || !$in) {
+	if ($out) fclose($out);
+	if ($in) fclose($in);
+	upload_error('Could not receive image', 500);
+}
+$written = 0;
+while (!feof($in)) {
+	$data = fread($in, 8192);
+	if ($data === false) break;
+	$written += strlen($data);
+	if ($written > $maxBytes || ftell($out) + strlen($data) > $maxBytes) {
 		fclose($in);
 		fclose($out);
-	} else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+		@unlink($partPath);
+		upload_error('Image exceeds the 10 MB limit', 413);
+	}
+	if ($data !== '' && fwrite($out, $data) !== strlen($data)) {
+		fclose($in);
+		fclose($out);
+		upload_error('Could not receive image', 500);
+	}
+}
+fclose($in);
+fclose($out);
+
+if ($chunks > 0 && $chunk < $chunks - 1) {
+	echo json_encode(array('jsonrpc' => '2.0', 'result' => null, 'id' => 'id'));
+	exit;
 }
 
-// Check if file has been uploaded
-if (!$chunks || $chunk == $chunks - 1) {
-	// Strip the temp .part suffix off
-	rename("{$filePath}.part", $filePath);
+if (!is_file($partPath) || filesize($partPath) < 1 || filesize($partPath) > $maxBytes || !function_exists('imagecreatefromstring') || !function_exists('imagejpeg') || !function_exists('imagepng') || !function_exists('finfo_open')) {
+	@unlink($partPath);
+	upload_error('Image processing is unavailable or the image is invalid', 415);
 }
 
+$imageInfo = @getimagesize($partPath);
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mime = $finfo ? finfo_file($finfo, $partPath) : false;
+if ($finfo) finfo_close($finfo);
+$extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+$validType = $imageInfo && $imageInfo[0] > 0 && $imageInfo[1] > 0
+	&& ($imageInfo[0] * $imageInfo[1]) <= 12000000
+	&& (($extension === 'png' && $imageInfo[2] === IMAGETYPE_PNG && $mime === 'image/png')
+		|| (in_array($extension, array('jpg', 'jpeg'), true) && $imageInfo[2] === IMAGETYPE_JPEG && $mime === 'image/jpeg'));
+if (!$validType) {
+	@unlink($partPath);
+	upload_error('Only valid JPG and PNG images are accepted', 415);
+}
 
-// Return JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-
+$image = @imagecreatefromstring(file_get_contents($partPath));
+if (!$image) {
+	@unlink($partPath);
+	upload_error('Invalid image data', 415);
+}
+$finalPath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+if (file_exists($finalPath)) {
+	$base = pathinfo($fileName, PATHINFO_FILENAME);
+	$finalPath = $targetDir . DIRECTORY_SEPARATOR . $base . '_' . bin2hex(random_bytes(8)) . '.' . $extension;
+}
+$temporaryPath = tempnam($targetDir, '.image-');
+if ($temporaryPath === false) {
+	imagedestroy($image);
+	@unlink($partPath);
+	upload_error('Could not store image', 500);
+}
+$saved = $extension === 'png' ? @imagepng($image, $temporaryPath, 6) : @imagejpeg($image, $temporaryPath, 90);
+imagedestroy($image);
+@unlink($partPath);
+if (!$saved || !rename($temporaryPath, $finalPath)) {
+	@unlink($temporaryPath);
+	upload_error('Could not store image', 500);
+}
+@chmod($finalPath, 0640);
+echo json_encode(array('jsonrpc' => '2.0', 'result' => null, 'id' => 'id'));
 ?>
