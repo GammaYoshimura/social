@@ -2,8 +2,7 @@
 	echo "<h2>Mensajeria Privada: Recibidos</h2>";
 	echo "<div id='mps_separador'></div>";
 	
-	$sql = "SELECT *, DATE_FORMAT(mps.fecha, '%W %e de %M a las %H:%i') AS fechaf FROM mps,usuarios LEFT JOIN fotos ON idfotos=idfotos_princi WHERE receptor='".$global_idusuarios."' AND idusuarios=emisor ORDER BY idmps DESC";
-	$q_mensajes = mysqli_query($link,$sql);
+	$q_mensajes = db_query("SELECT *, DATE_FORMAT(mps.fecha, '%W %e de %M a las %H:%i') AS fechaf FROM mps, usuarios LEFT JOIN fotos ON idfotos = idfotos_princi WHERE receptor = ? AND idusuarios = emisor ORDER BY idmps DESC", array((int)$global_idusuarios), 'i');
 	
 	if(mysqli_num_rows($q_mensajes)>0){
 		while($r_mensajes=mysqli_fetch_assoc($q_mensajes)){

@@ -19,27 +19,32 @@ require ("upload/subida.html");
 				exit('Solicitud no válida');
 			}
 			$count = 0;
+			$albumId = null;
+			if (isset($_POST['idalbums']) && $_POST['idalbums'] !== '' && $_POST['idalbums'] !== 'NULL') {
+				$albumId = filter_var($_POST['idalbums'], FILTER_VALIDATE_INT);
+				$ownedAlbum = $albumId ? db_query("SELECT idalbums FROM albums WHERE idalbums = ? AND usuarios_idusuarios = ?", array((int)$albumId, (int)$global_idusuarios), 'ii') : false;
+				if (!$ownedAlbum || mysqli_num_rows($ownedAlbum) !== 1) { http_response_code(400); exit('Album no válido'); }
+			}
+			$uploadDirectory = dirname(__FILE__) . '/user_fotos/' . (int)$global_idusuarios . '-' . limpia_texto($global_nombrefull);
 			foreach ($_POST as $name => $value) {
-				if (preg_match("/tmpname/", $name, $algohaykeponer) == 1) {
-					$count++;
-					if($_POST['idalbums']=="")
-						$_POST['idalbums'] = "NULL";
-					
-					mysqli_query($link,"INSERT INTO fotos (titulo,archivo,uploader,fecha,albums_idalbums) VALUES ('" . $_POST['titulo'] . "','user_fotos/" . $global_idusuarios . "-" . limpia_texto($global_nombrefull) . "/" . $value . "','" . $global_idusuarios . "',now()," . $_POST['idalbums'] . ")");
-					error_mysql("exit");
+				if (preg_match("/tmpname/", $name) === 1 && is_string($value) && preg_match('/\A[A-Za-z0-9_-]{1,100}\.(?:jpe?g|png)\z/i', $value) === 1) {
+					$filePath = $uploadDirectory . DIRECTORY_SEPARATOR . $value;
+					if (!is_file($filePath) || filesize($filePath) < 1 || filesize($filePath) > 10 * 1024 * 1024) continue;
+					$title = isset($_POST['titulo']) && is_string($_POST['titulo']) ? $_POST['titulo'] : '';
+					$relativePath = 'user_fotos/' . (int)$global_idusuarios . '-' . limpia_texto($global_nombrefull) . '/' . $value;
+					if (db_query("INSERT INTO fotos (titulo, archivo, uploader, fecha, albums_idalbums) VALUES (?, ?, ?, now(), ?)", array($title, $relativePath, (int)$global_idusuarios, $albumId), 'ssii')) $count++;
 				}
 			}
 
 			if ($count > 0) {
 				//Si ha subido fotos recientemente hacemos update sino insert
-				$q_novedades = mysqli_query($link,"SELECT idnovedades,datos FROM novedades WHERE propietario = {$global_idusuarios} AND tipo = 'subida_fotos' AND fecha > ADDTIME(now(), '-7 0:0:0') LIMIT 1");
+				$q_novedades = db_query("SELECT idnovedades, datos FROM novedades WHERE propietario = ? AND tipo = 'subida_fotos' AND fecha > ADDTIME(now(), '-7 0:0:0') LIMIT 1", array((int)$global_idusuarios), 'i');
 				if(mysqli_num_rows($q_novedades)==1){
 					$r_novedades=mysqli_fetch_assoc($q_novedades);
-					$suma = $r_novedades['datos'] + $count;
-					mysqli_query($link,"UPDATE novedades SET datos='{$suma}' WHERE idnovedades={$r_novedades['idnovedades']}");
-					echo mysqli_error($link);
+					$suma = (int)$r_novedades['datos'] + (int)$count;
+					db_query("UPDATE novedades SET datos = ? WHERE idnovedades = ? AND propietario = ?", array($suma, (int)$r_novedades['idnovedades'], (int)$global_idusuarios), 'iii');
 				}else{
-					mysqli_query($link,"INSERT INTO novedades (fecha,tipo, propietario, datos) VALUES (now(),'subida_fotos','{$global_idusuarios}','{$count}')");
+					db_query("INSERT INTO novedades (fecha,tipo, propietario, datos) VALUES (now(), 'subida_fotos', ?, ?)", array((int)$global_idusuarios, (int)$count), 'ii');
 				}
 				?>
 				
@@ -69,7 +74,7 @@ require ("upload/subida.html");
 			<br />
 			<b>Album:</b>
 			<?php
-			$albums = mysqli_query($link,"SELECT * FROM `albums` WHERE usuarios_idusuarios='" . $global_idusuarios . "'");
+			$albums = db_query("SELECT * FROM albums WHERE usuarios_idusuarios = ?", array((int)$global_idusuarios), 'i');
 			if (mysqli_num_rows($albums) > 0) {
 				print "<div class='input'>
 						<span class='select'>

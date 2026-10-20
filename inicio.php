@@ -6,8 +6,7 @@ require ("inc/estructura.inc.php");
 <div class="barra_izq">
 	<?php
 		########## NEWS ##############
-		$sql = "SELECT * FROM notificaciones WHERE usuarios_idusuarios='{$global_idusuarios}' AND datos<>0";
-		$q_notifi = mysqli_query($link, $sql);
+		$q_notifi = db_query("SELECT * FROM notificaciones WHERE usuarios_idusuarios = ? AND datos <> 0", array((int)$global_idusuarios), 'i');
 		if(mysqli_num_rows($q_notifi)>0){
 			print "<div class='marco_small'>";
 			while($r_notifi = mysqli_fetch_assoc($q_notifi)){

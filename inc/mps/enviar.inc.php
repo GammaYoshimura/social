@@ -2,7 +2,7 @@
 	<?php
 		require_once("inc/validador.class.php");
 		$Validador = new Validador();
-		if(!$_GET['receptor']){
+		if(!isset($_GET['receptor']) || $_GET['receptor'] === ''){
 			$Validador->SetInput(array('name' => 'receptor', 'alias' => 'Destinatario', 'obligatorio' => 'si'));
 		}
 		$Validador->SetInput(array('name' => 'mensaje_mp', 'alias' => 'Mensaje', 'min' => '1'));
@@ -25,22 +25,24 @@
 	<div id='mps_separador'></div>
 <?php
 	//Si hay un destinatario preseleccionado
-	if($_GET['receptor']){
-		$query=mysqli_query($link,"SELECT * FROM usuarios LEFT JOIN fotos ON idfotos_princi = idfotos WHERE idusuarios='".$_GET['receptor']."'");
-		$usuario=mysqli_fetch_assoc($query);
+	if(isset($_GET['receptor']) && $_GET['receptor'] !== ''){
+		$recipientId = filter_var($_GET['receptor'], FILTER_VALIDATE_INT);
+		$query = $recipientId ? db_query("SELECT * FROM usuarios LEFT JOIN fotos ON idfotos_princi = idfotos WHERE idusuarios = ?", array((int)$recipientId), 'i') : false;
+		$usuario = $query ? mysqli_fetch_assoc($query) : false;
+		if (!$usuario || !can_view_profile($recipientId)) { http_response_code(404); exit('Destinatario no disponible'); }
 		
 		print "<form action='#' onsubmit='return false'>
 				Destinatario: <img id='receptor_icon' src='{$usuario['archivo']}'>
 				<input id='receptor' name='receptor' class='' value='{$usuario['nombre']} {$usuario['apellidos']}' disabled  size='40'>
 				<input id='receptor_id' name='receptor_id' style='display: none;' value='{$_GET['receptor']}'>";
 	}else{
-		$query=mysqli_query($link,"
+		$query=db_query("
 			SELECT idusuarios, nombre, apellidos, archivo
 			FROM amigos, usuarios
 			LEFT JOIN fotos
 			ON idfotos_princi=idfotos
-			WHERE user1='".$global_idusuarios."' AND user2=idusuarios OR user2='".$global_idusuarios."' AND user1=idusuarios
-		");
+			WHERE (user1 = ? AND user2 = idusuarios) OR (user2 = ? AND user1 = idusuarios)
+		", array((int)$global_idusuarios, (int)$global_idusuarios), 'ii');
 
 		if(mysqli_num_rows($query)>0){
 			?>

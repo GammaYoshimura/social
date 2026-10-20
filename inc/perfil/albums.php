@@ -4,7 +4,7 @@
 	
 	//Subidas
 	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . $_GET['id'] . "&idalbum=subidas'>Fotos subidas</a></div>";
-	$fotos = mysqli_query($link,"SELECT * FROM fotos WHERE uploader='" . $_GET['id'] . "' ORDER BY idfotos DESC LIMIT 3");
+	$fotos = db_query("SELECT * FROM fotos WHERE uploader = ? ORDER BY idfotos DESC LIMIT 3", array((int)$_GET['id']), 'i');
 	if (mysqli_num_rows($fotos)) {
 		while ($row = mysqli_fetch_assoc($fotos)) {
 			echo "<div class='foto'><a href='album.php?iduser=" . $_GET['id'] . "&idalbum=subidas'><img class='album_cubierta' alt='cubierta album' src='" . $row['archivo'] . "' /></a></div>";
@@ -16,7 +16,7 @@
 
 	//Etiquetadas
 	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . $_GET['id'] . "&idalbum=etiquetadas'>Fotos etiquetadas</a></div>";
-	$fotos = mysqli_query($link,"SELECT * FROM fotos, etiquetas WHERE usuarios_idusuarios = '" . $_GET['id'] . "' AND idfotos = fotos_idfotos ORDER BY idfotos DESC LIMIT 3");
+	$fotos = db_query("SELECT * FROM fotos, etiquetas WHERE usuarios_idusuarios = ? AND idfotos = fotos_idfotos ORDER BY idfotos DESC LIMIT 3", array((int)$_GET['id']), 'i');
 	if (mysqli_num_rows($fotos)) {
 		while ($row = mysqli_fetch_assoc($fotos)) {
 			echo "<div class='foto'><a href='album.php?iduser=" . $_GET['id'] . "&idalbum=etiquetadas'><img class='album_cubierta' alt='cubierta album' src='" . $row['archivo'] . "' /></a></div>";
@@ -27,7 +27,7 @@
 	echo "</div>";
 
 	//Personalizados
-	$personalizados = mysqli_query($link,"SELECT * FROM `albums` WHERE usuarios_idusuarios='" . $_GET['id'] . "'");
+	$personalizados = db_query("SELECT * FROM albums WHERE usuarios_idusuarios = ?", array((int)$_GET['id']), 'i');
 	if (mysqli_num_rows($personalizados) > 0) {
 		echo "<h2 style='clear: both;margin-bottom:0px;'>Albums personales</h2>";
 		while ($row = mysqli_fetch_assoc($personalizados)) {
@@ -37,7 +37,7 @@
 						<div class='album_renombrar' onclick=\"album_renombrar('" . $row['idalbums'] . "','" . $row['album'] . "')\"></div>
 						<div class='album_borrar' onclick=\"album_borrar('" . $row['idalbums'] . "','" . $row['album'] . "')\"></div>
 					</div>");
-			$fotos = mysqli_query($link,"SELECT * FROM fotos WHERE albums_idalbums = '" . $row['idalbums'] . "' ORDER BY idfotos LIMIT 3");
+			$fotos = db_query("SELECT * FROM fotos WHERE albums_idalbums = ? ORDER BY idfotos LIMIT 3", array((int)$row['idalbums']), 'i');
 			if (mysqli_num_rows($fotos)) {
 				while ($row2 = mysqli_fetch_assoc($fotos)) {
 					echo "<div class='foto'><a href='album.php?iduser=" . $_GET['id'] . "&idalbum=" . $row['idalbums'] . "'><img class='album_cubierta' style='bottom:" . $bottom . "px;left:" . $left . "px;max-width:" . $width . "px;max-height:" . $height . "px;' alt='cubierta album' src='" . $row2['archivo'] . "' /></a></div>";

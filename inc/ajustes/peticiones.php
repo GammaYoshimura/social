@@ -14,13 +14,11 @@
 	
 </script>
 <?php
-$sql = "SELECT *, archivo, DATE_FORMAT(peticiones.fecha, '%d/%m/%Y %H:%i') AS fechaf
+$q_peticiones = db_query("SELECT *, archivo, DATE_FORMAT(peticiones.fecha, '%d/%m/%Y %H:%i') AS fechaf
 		FROM peticiones, usuarios
 		LEFT JOIN fotos
 		ON idfotos=idfotos_princi
-		WHERE receptor = '" . $global_idusuarios . "' AND idusuarios = emisor";
-
-$q_peticiones = mysqli_query($link, $sql);
+		WHERE receptor = ? AND idusuarios = emisor", array((int)$global_idusuarios), 'i');
 if (mysqli_num_rows($q_peticiones) > 0) {
 	echo "Tienes " . mysqli_num_rows($q_peticiones) . " peticion(es) de amistad:<br>";
 	echo "<div id='peticiones_amistad'>";

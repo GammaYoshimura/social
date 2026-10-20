@@ -9,7 +9,7 @@
 			<li><a href="album.php?idalbum=subidas&amp;iduser=<?php echo $global_idusuarios; ?>">Subidas</a></li>
 			<li><a href="album.php?idalbum=etiquetadas&amp;iduser=<?php echo $global_idusuarios; ?>">Etiquetadas</a></li>
 			<?php
-			$result=mysqli_query($link,"SELECT * FROM albums WHERE usuarios_idusuarios='".$global_idusuarios."'");
+			$result=db_query("SELECT * FROM albums WHERE usuarios_idusuarios = ?", array((int)$global_idusuarios), 'i');
 			if(mysqli_num_rows($result)>0){
 				while($row=mysqli_fetch_assoc($result)){
 					echo "<li><a href='album.php?idalbum=".$row['idalbums']."&amp;iduser=".$global_idusuarios."'>".$row['album']."</a></li>";

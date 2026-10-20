@@ -27,42 +27,38 @@
 				</script>
 				
 				<?php			
-				$sql="SELECT *,
-					FLOOR(DATEDIFF(CURDATE(),fnac)/365) AS edad,
-						(SELECT count(*)
-						FROM amigos WHERE user1='".$global_idusuarios."' AND user2=idusuarios OR  user2='".$global_idusuarios."' AND user1=idusuarios
-						) AS amigo,
-						(SELECT count(*)
-						FROM peticiones WHERE emisor='".$global_idusuarios."' AND receptor=idusuarios OR  receptor='".$global_idusuarios."' AND emisor=idusuarios
-						) AS enviada
-					FROM usuarios LEFT JOIN fotos ON idfotos_princi=idfotos";
-				$where="";
-				if($_POST['nombre']){
-					$where.=" AND nombre LIKE '%{$_POST['nombre']}%'";
+				$params = array((int)$global_idusuarios, (int)$global_idusuarios, (int)$global_idusuarios, (int)$global_idusuarios, (int)$global_idusuarios);
+				$types = 'iiiii';
+				$where = " WHERE idusuarios <> ?";
+				if (isset($_POST['nombre']) && is_string($_POST['nombre']) && $_POST['nombre'] !== '') {
+					$where .= " AND nombre LIKE ?";
+					$params[] = '%' . $_POST['nombre'] . '%'; $types .= 's';
 				}
-				if($_POST['apellidos']){
-					$where.=" AND apellidos LIKE '%{$_POST['apellidos']}%'";
+				if (isset($_POST['apellidos']) && is_string($_POST['apellidos']) && $_POST['apellidos'] !== '') {
+					$where .= " AND apellidos LIKE ?";
+					$params[] = '%' . $_POST['apellidos'] . '%'; $types .= 's';
 				}
-				if($_POST['edad_menor']){
-					$where.=" AND fnac <= date_add(now(), INTERVAL -{$_POST['edad_menor']} YEAR)";
+				foreach (array('edad_menor', 'edad_mayor') as $ageField) {
+					$age = isset($_POST[$ageField]) ? filter_var($_POST[$ageField], FILTER_VALIDATE_INT) : false;
+					if ($age && $age >= 18 && $age <= 100) {
+						$where .= $ageField === 'edad_menor' ? " AND fnac <= DATE_SUB(CURDATE(), INTERVAL ? YEAR)" : " AND fnac >= DATE_SUB(CURDATE(), INTERVAL ? YEAR)";
+						$params[] = (int)$age; $types .= 'i';
+					}
 				}
-				if($_POST['edad_mayor']){
-					$where.=" AND fnac >= date_add(now(), INTERVAL -{$_POST['edad_mayor']} YEAR)";
-				}
-				if($_POST['provincia']){
-					$where.=" AND provincia = '{$_POST['provincia']}'";
-				}
-				if($_POST['sexo']){
-					$where.=" AND sexo = '{$_POST['sexo']}'";
-				}
+				$province = isset($_POST['provincia']) && $_POST['provincia'] !== '' ? filter_var($_POST['provincia'], FILTER_VALIDATE_INT) : false;
+				if ($province !== false) { $where .= " AND provincia = ?"; $params[] = (int)$province; $types .= 'i'; }
+				if (isset($_POST['sexo']) && in_array($_POST['sexo'], array('h', 'm'), true)) { $where .= " AND sexo = ?"; $params[] = $_POST['sexo']; $types .= 's'; }
 				
-				$where = " WHERE idusuarios!='$global_idusuarios'$where";
-				$where_backup = $where;
-				
-				if(!$_POST['page']) $_POST['page']=1;
-				$limit = ($_POST['page'] - 1) * 5;
-				$where .= " LIMIT $limit, 5";
-				$sql .= $where;
+				$page = isset($_POST['page']) ? filter_var($_POST['page'], FILTER_VALIDATE_INT) : 1;
+				if (!$page || $page < 1) $page = 1;
+				$_POST['page'] = $page;
+				$limit = ($page - 1) * 5;
+				$sql = "SELECT *, FLOOR(DATEDIFF(CURDATE(),fnac)/365) AS edad,
+					(SELECT count(*) FROM amigos WHERE user1 = ? AND user2 = idusuarios OR user2 = ? AND user1 = idusuarios) AS amigo,
+					(SELECT count(*) FROM peticiones WHERE emisor = ? AND receptor = idusuarios OR receptor = ? AND emisor = idusuarios) AS enviada
+					FROM usuarios LEFT JOIN fotos ON idfotos_princi = idfotos" . $where . " LIMIT ?, 5";
+				$searchParams = array_merge(array_slice($params, 0, 4), array_slice($params, 4), array((int)$limit));
+				$searchTypes = 'iiii' . substr($types, 4) . 'i';
 				
 				//TODO: Debug
 				/*echo "<pre>";
@@ -71,7 +67,7 @@
 				echo "$sql<br>";*/
 				
 				echo "<div id='resultados'>";
-				$q_search = mysqli_query($link,$sql);
+				$q_search = db_query($sql, $searchParams, $searchTypes);
 				if(mysqli_num_rows($q_search)){
 					error_mysql();
 					while($r_search = mysqli_fetch_assoc($q_search)){
@@ -116,7 +112,9 @@
 					}
 					
 					//Numeracion paginas
-					$q_search_nums = mysqli_query($link, "SELECT COUNT(*) AS total FROM usuarios $where_backup");
+					$countParams = array_slice($params, 4);
+					$countTypes = substr($types, 4);
+					$q_search_nums = db_query("SELECT COUNT(*) AS total FROM usuarios" . $where, $countParams, $countTypes);
 					$r_search_nums = mysqli_fetch_assoc($q_search_nums);
 			
 					$siguiente = $_POST['page'] + 1;

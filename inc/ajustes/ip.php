@@ -8,10 +8,7 @@
 		<th>Direccion IP</th>
 	</tr>
 	<?php
-	$sql = "SELECT *, DATE_FORMAT(fecha, '%W %e de %M %Y a las %H:%i') AS fechaf
-				FROM accesos
-				WHERE usuarios_idusuarios = '{$global_idusuarios}' ORDER BY fecha DESC";
-	$q_accesos = mysqli_query($link, $sql);
+	$q_accesos = db_query("SELECT *, DATE_FORMAT(fecha, '%W %e de %M %Y a las %H:%i') AS fechaf FROM accesos WHERE usuarios_idusuarios = ? ORDER BY fecha DESC", array((int)$global_idusuarios), 'i');
 	while ($r_accesos = mysqli_fetch_assoc($q_accesos)) {
 		print "
 			<tr>

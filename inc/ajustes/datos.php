@@ -1,6 +1,5 @@
 <?php
-	$sql = "SELECT *, DATE_FORMAT( fnac, '%d/%m/%Y' ) AS fnac2 FROM usuarios WHERE idusuarios = '{$global_idusuarios}'";
-	$q_user = mysqli_query($link, $sql);
+	$q_user = db_query("SELECT *, DATE_FORMAT(fnac, '%d/%m/%Y') AS fnac2 FROM usuarios WHERE idusuarios = ?", array((int)$global_idusuarios), 'i');
 	$r_user = mysqli_fetch_assoc($q_user);
 ?>
 

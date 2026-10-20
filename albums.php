@@ -9,21 +9,23 @@ require ("inc/estructura.inc.php");
 	<?php
 
 	//Albums de fotos de ¿?
-	if (!$_GET['iduser']) {
+	if (!isset($_GET['iduser']) || $_GET['iduser'] === '') {
 		$_GET['iduser'] = $global_idusuarios;
 		$user = 'yo';
 		echo "<h2 style='margin-bottom:0px;'>Mis Albums de imagenes</h2>";
 	} else {
-		$usuario = mysqli_query($link,"SELECT * FROM usuarios WHERE idusuarios='" . $_GET['iduser'] . "'");
-		if (mysqli_num_rows($usuario) > 0) {
-			$row = mysqli_fetch_assoc($usuario);
-			echo "<h2 style='margin-bottom:0px;'>Albums de imagenes de " . $row['nombre'] . "</h2>";
-		}
+		$requestedId = filter_var($_GET['iduser'], FILTER_VALIDATE_INT);
+		if (!$requestedId || !can_view_profile($requestedId)) { http_response_code(404); exit('Album no disponible'); }
+		$_GET['iduser'] = (int)$requestedId;
+		$usuario = db_query("SELECT nombre FROM usuarios WHERE idusuarios = ?", array((int)$requestedId), 'i');
+		$row = $usuario ? mysqli_fetch_assoc($usuario) : false;
+		if (!$row) { http_response_code(404); exit('Usuario no disponible'); }
+		echo "<h2 style='margin-bottom:0px;'>Albums de imagenes de " . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . "</h2>";
 	}
 
 	//Subidas
 	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=subidas'>Fotos subidas</a></div>";
-	$fotos = mysqli_query($link,"SELECT * FROM fotos WHERE uploader='" . $_GET['iduser'] . "' ORDER BY idfotos DESC LIMIT 3");
+	$fotos = db_query("SELECT * FROM fotos WHERE uploader = ? ORDER BY idfotos DESC LIMIT 3", array((int)$_GET['iduser']), 'i');
 	if (mysqli_num_rows($fotos)) {
 		$bottom = 0;
 		$left = 0;
@@ -40,7 +42,7 @@ require ("inc/estructura.inc.php");
 
 	//Etiquetadas
 	echo "<div class='album'><div class='album_titulo'><a href='album.php?iduser=" . $_GET['iduser'] . "&idalbum=etiquetadas'>Fotos etiquetadas</a></div>";
-	$fotos = mysqli_query($link,"SELECT * FROM fotos, etiquetas WHERE usuarios_idusuarios = '" . $_GET['iduser'] . "' AND idfotos = fotos_idfotos ORDER BY idfotos DESC LIMIT 3");
+	$fotos = db_query("SELECT * FROM fotos, etiquetas WHERE usuarios_idusuarios = ? AND idfotos = fotos_idfotos ORDER BY idfotos DESC LIMIT 3", array((int)$_GET['iduser']), 'i');
 	if (mysqli_num_rows($fotos)) {
 		$bottom = 0;
 		$left = 0;
@@ -57,7 +59,7 @@ require ("inc/estructura.inc.php");
 	//Personalizados
 	echo "<h2 style='clear: both;margin-bottom:0px;'>Albums personales</h2>";
 
-	$personalizados = mysqli_query($link,"SELECT * FROM `albums` WHERE usuarios_idusuarios='" . $_GET['iduser'] . "'");
+	$personalizados = db_query("SELECT * FROM albums WHERE usuarios_idusuarios = ?", array((int)$_GET['iduser']), 'i');
 	if (mysqli_num_rows($personalizados) > 0) {
 		while ($row = mysqli_fetch_assoc($personalizados)) {
 			print("<div class='album'>
@@ -66,7 +68,7 @@ require ("inc/estructura.inc.php");
 						<div class='album_renombrar' onclick=\"album_renombrar('" . $row['idalbums'] . "','" . $row['album'] . "')\"></div>
 						<div class='album_borrar' onclick=\"album_borrar('" . $row['idalbums'] . "','" . $row['album'] . "')\"></div>
 					</div>");
-			$fotos = mysqli_query($link,"SELECT * FROM fotos WHERE albums_idalbums = '" . $row['idalbums'] . "' ORDER BY idfotos LIMIT 3");
+			$fotos = db_query("SELECT * FROM fotos WHERE albums_idalbums = ? ORDER BY idfotos LIMIT 3", array((int)$row['idalbums']), 'i');
 			if (mysqli_num_rows($fotos)) {
 				$bottom = 0;
 				$left = 0;

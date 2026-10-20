@@ -34,6 +34,14 @@ function db_query($sql, $params = array(), $types = '') {
 	return $result;
 }
 
+function can_view_profile($profileId) {
+	global $link, $global_idusuarios;
+	$profileId = (int)$profileId;
+	if ($profileId > 0 && $profileId === (int)$global_idusuarios) return true;
+	$friendship = db_query("SELECT user1 FROM amigos WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)", array($profileId, (int)$global_idusuarios, (int)$global_idusuarios, $profileId), 'iiii');
+	return $friendship && mysqli_num_rows($friendship) === 1;
+}
+
 function NombreApellido($input, $maximo = 18) {//si no se pasa segudo parametro sera X por defecto
 	$minimo = 10;
 	//Posicion minima del espacio, evita nombres cortos
@@ -244,39 +252,36 @@ function IdProvincia($id){
 
 function notificacion($notificacion){
 	global $link;
-	
-	mysqli_query($link, "DELETE FROM notificaciones WHERE usuarios_idusuarios='".$notificacion['propietario']."' AND tipo='{$notificacion['tipo']}'");
+	$owner = (int)$notificacion['propietario'];
+	$type = (string)$notificacion['tipo'];
+	db_query("DELETE FROM notificaciones WHERE usuarios_idusuarios = ? AND tipo = ?", array($owner, $type), 'is');
 	
 	if($notificacion['tipo'] == "tablon")
 	{
-		$query = mysqli_query($link,"SELECT COUNT(*) AS cuenta FROM tablon WHERE receptor='".$notificacion['propietario']."' AND leido='0'");
+		$query = db_query("SELECT COUNT(*) AS cuenta FROM tablon WHERE receptor = ? AND leido = 0", array($owner), 'i');
 	}
 	elseif($notificacion['tipo'] == "mp")
 	{
-		$query = mysqli_query($link,"SELECT COUNT(*) AS cuenta FROM mps WHERE receptor='".$notificacion['propietario']."' AND leido='0'");
+		$query = db_query("SELECT COUNT(*) AS cuenta FROM mps WHERE receptor = ? AND leido = 0", array($owner), 'i');
 	}
 	elseif($notificacion['tipo'] == "peticion")
 	{
-		$query = mysqli_query($link,"SELECT COUNT(*) AS cuenta FROM peticiones WHERE receptor='".$notificacion['propietario']."' AND ignorada<>'1'");
+		$query = db_query("SELECT COUNT(*) AS cuenta FROM peticiones WHERE receptor = ? AND ignorada <> 1", array($owner), 'i');
+	} else {
+		return;
 	}
 	
 	$row = mysqli_fetch_assoc($query);
 	$num = $row['cuenta'];
-	mysqli_query($link,"INSERT INTO notificaciones (tipo, usuarios_idusuarios, datos) VALUES ('{$notificacion['tipo']}', '{$notificacion['propietario']}', '{$num}')");
+	db_query("INSERT INTO notificaciones (tipo, usuarios_idusuarios, datos) VALUES (?, ?, ?)", array($type, $owner, (int)$num), 'sii');
 	
 	error_mysql();
 }
 
 function novedades($novedad){
 	global $link;
-	
-	if($novedad['visitante']){
-		$novedad['visitante'] = "'".$novedad['visitante']."'";
-	}else{
-		$novedad['visitante'] = "NULL";
-	}
-	
-	mysqli_query($link, "INSERT INTO novedades (fecha, tipo, propietario, visitante, datos) VALUES (now(), '{$novedad['tipo']}', '{$novedad['propietario']}', {$novedad['visitante']}, '{$novedad['datos']}')");
+	$visitor = !empty($novedad['visitante']) ? (int)$novedad['visitante'] : null;
+	db_query("INSERT INTO novedades (fecha, tipo, propietario, visitante, datos) VALUES (now(), ?, ?, ?, ?)", array((string)$novedad['tipo'], (int)$novedad['propietario'], $visitor, isset($novedad['datos']) ? (string)$novedad['datos'] : ''), 'siis');
 	error_mysql("exit");
 }
 

@@ -52,11 +52,11 @@
 					<?php
 				}
 			echo "/>";
-			$etiquetados = mysqli_query($link,"SELECT idusuarios, nombre, apellidos, archivo, x, y
+			$etiquetados = db_query("SELECT idusuarios, nombre, apellidos, archivo, x, y
 												FROM etiquetas, usuarios
 												LEFT JOIN fotos ON idfotos_princi = idfotos
-												WHERE fotos_idfotos = '{$r_fotos['idfotos']}'
-												AND usuarios_idusuarios = idusuarios");
+												WHERE fotos_idfotos = ?
+												AND usuarios_idusuarios = idusuarios", array((int)$r_fotos['idfotos']), 'i');
 			while($p = mysqli_fetch_assoc($etiquetados)){
 				echo "<div class='etiquetado etiqueta_".$p['idusuarios']."' style='left:".$p['x']."px;top:".$p['y']."px;' id='etiqueta_".$p['idusuarios']."'>
 					<div class='etiqueta_nombre'>".$p['nombre']." ".$p['apellidos']."</div>

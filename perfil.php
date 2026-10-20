@@ -1,27 +1,26 @@
 <?php
 require ("inc/verify_login.php");
 
-if ($_GET['id'] == $global_idusuarios)	$_GET['id']=NULL; //Si el id es el mio, se ve la pagina en modo normal
+if (!isset($_GET['id']) || $_GET['id'] === '' || (int)$_GET['id'] === (int)$global_idusuarios) $_GET['id']=NULL; //Si el id es el mio, se ve la pagina en modo normal
 
 if ($_GET['id']) {
-	//Comprueba amistad
-	$query = mysqli_query($link, "SELECT COUNT(*) AS cuenta FROM amigos WHERE user1='" . $_GET['id'] . "' AND user2='" . $global_idusuarios . "' OR user2='" . $_GET['id'] . "' AND user1='" . $global_idusuarios . "'");
-	$row = mysqli_fetch_assoc($query);
-	if ($row['cuenta'] != 1) {
+	$profileId = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+	if (!$profileId || !can_view_profile($profileId)) {
 		header("Location: inicio.php?nosoisamigos");
 		die();
 	}
+	//Comprueba amistad
 	$perfil = "ajeno";
 } else {
 	$_GET['id'] = $global_idusuarios;
 	$perfil = "propio";
 }
-$sql = "SELECT *,
+
+$q_user = db_query("SELECT *,
 			FLOOR(DATEDIFF(CURDATE(),fnac)/365) AS edad,
 			DATE_FORMAT(fecha_reg, '%d/%m/%Y') AS fecha_reg,
 			TIME_TO_SEC(TIMEDIFF(now(),online)) AS segundos_off
-		FROM `usuarios` LEFT JOIN fotos ON idfotos = idfotos_princi WHERE idusuarios='" . $_GET['id'] . "'";
-$q_user = mysqli_query($link, $sql);
+		FROM `usuarios` LEFT JOIN fotos ON idfotos = idfotos_princi WHERE idusuarios = ?", array((int)$_GET['id']), 'i');
 $r_user = mysqli_fetch_assoc($q_user);
 
 if ($perfil == "ajeno") {

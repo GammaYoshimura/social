@@ -10,32 +10,35 @@ require ("inc/chat.php");
 
 		##### CONSULTA SQL
 
-		if (!$_GET['page']) {
-			$_GET['page'] = 1;
-		}
-		
-		if (!$_GET['idalbum']) {
-			die("no idalbum");
-		} elseif (($_GET['idalbum'] == "subidas" OR $_GET['idalbum'] == "etiquetadas") AND !$_GET['iduser']) {
-			die("no idusuario");
-		} elseif (($_GET['idalbum'] == "subidas" OR $_GET['idalbum'] == "etiquetadas") AND $_GET['iduser']) {
-			//ALBUM etiquetadas o subidas
-			if ($_GET['idalbum'] == "subidas") {
-				$sql = "SELECT * FROM usuarios,fotos WHERE idusuarios = uploader AND uploader='" . $_GET['iduser'] . "' ORDER BY idfotos DESC";
+		$page = isset($_GET['page']) ? filter_var($_GET['page'], FILTER_VALIDATE_INT) : 1;
+		if (!$page || $page < 1 || !isset($_GET['idalbum']) || !is_string($_GET['idalbum'])) die("Solicitud no válida");
+		$limit_min = ($page - 1) * 10;
+		$albumType = $_GET['idalbum'];
+		if ($albumType === 'subidas' || $albumType === 'etiquetadas') {
+			$ownerId = isset($_GET['iduser']) ? filter_var($_GET['iduser'], FILTER_VALIDATE_INT) : false;
+			if (!$ownerId || !can_view_profile($ownerId)) { http_response_code(404); exit('Album no disponible'); }
+			if ($albumType === 'subidas') {
+				$fromWhere = "FROM usuarios, fotos WHERE idusuarios = uploader AND uploader = ?";
+				$params = array((int)$ownerId);
+				$types = 'i';
+			} else {
+				$fromWhere = "FROM usuarios, fotos, etiquetas WHERE usuarios_idusuarios = ? AND usuarios_idusuarios = idusuarios AND idfotos = fotos_idfotos";
+				$params = array((int)$ownerId);
+				$types = 'i';
 			}
-			if ($_GET['idalbum'] == "etiquetadas") {
-				$sql = "SELECT * FROM usuarios,fotos, etiquetas WHERE usuarios_idusuarios = '" . $_GET['iduser'] . "' AND usuarios_idusuarios = idusuarios AND idfotos = fotos_idfotos ORDER BY idfotos DESC";
-			}
-		} elseif ($_GET['idalbum']) {
-			//Album personalizado
-			$sql = "SELECT * FROM usuarios, albums, fotos WHERE idusuarios = usuarios_idusuarios AND idalbums = '" . $_GET['idalbum'] . "' AND idalbums = albums_idalbums  AND idfotos <= '999999999' ORDER BY idfotos DESC";
+		} else {
+			$albumId = filter_var($albumType, FILTER_VALIDATE_INT);
+			if (!$albumId) die('Album no válido');
+			$albumOwner = db_query("SELECT usuarios_idusuarios FROM albums WHERE idalbums = ?", array((int)$albumId), 'i');
+			$ownerRow = $albumOwner ? mysqli_fetch_assoc($albumOwner) : false;
+			if (!$ownerRow || !can_view_profile($ownerRow['usuarios_idusuarios'])) { http_response_code(404); exit('Album no disponible'); }
+			$ownerId = (int)$ownerRow['usuarios_idusuarios'];
+			$fromWhere = "FROM usuarios, albums, fotos WHERE idusuarios = usuarios_idusuarios AND idalbums = ? AND idalbums = albums_idalbums AND idfotos <= 999999999";
+			$params = array((int)$albumId);
+			$types = 'i';
 		}
-
-		$limit_min = ($_GET['page'] - 1) * 10;
-		$limit_max = 10;
-		$sql_old = $sql;
-		$sql = $sql . " LIMIT " . $limit_min . ", " . $limit_max;
-		$fotos = mysqli_query($link, $sql);
+		$sql_old = "SELECT * " . $fromWhere . " ORDER BY idfotos DESC";
+		$fotos = db_query($sql_old . " LIMIT ?, 10", array_merge($params, array((int)$limit_min)), $types . 'i');
 
 		if (mysqli_num_rows($fotos)) {
 			$row = mysqli_fetch_assoc($fotos);
@@ -61,9 +64,10 @@ require ("inc/chat.php");
 
 
 		###### BARRA NAVEGACION
-		$result = mysqli_query($link, $sql_old);
-		$npage_max = ceil(mysqli_num_rows($result) / 10);
-		$npage_initial = $_GET['page'];
+		$result = db_query("SELECT COUNT(*) AS total " . $fromWhere, $params, $types);
+		$countRow = mysqli_fetch_assoc($result);
+		$npage_max = ceil($countRow['total'] / 10);
+		$npage_initial = $page;
 		
 		if($npage_initial>1)
 			$anterior=$npage_initial-1;
@@ -71,12 +75,12 @@ require ("inc/chat.php");
 		if($npage_initial<$npage_max)
 			$siguiente=$npage_initial+1;
 		
-		$navegar_primera="?iduser=".$_GET['iduser']."&idalbum=".$_GET['idalbum']."&page=1";
+		$navegar_primera="?iduser=".(int)$ownerId."&idalbum=".rawurlencode($albumType)."&page=1";
 		if($anterior)
-			$navegar_anterior="?iduser=".$_GET['iduser']."&idalbum=".$_GET['idalbum']."&page=".$anterior;
+			$navegar_anterior="?iduser=".(int)$ownerId."&idalbum=".rawurlencode($albumType)."&page=".$anterior;
 		if($siguiente)
-			$navegar_siguiente="?iduser=".$_GET['iduser']."&idalbum=".$_GET['idalbum']."&page=".$siguiente;
-		$navegar_ultima="?iduser=".$_GET['iduser']."&idalbum=".$_GET['idalbum']."&page=".$npage_max;
+			$navegar_siguiente="?iduser=".(int)$ownerId."&idalbum=".rawurlencode($albumType)."&page=".$siguiente;
+		$navegar_ultima="?iduser=".(int)$ownerId."&idalbum=".rawurlencode($albumType)."&page=".$npage_max;
 	
 				?>
 		<script>

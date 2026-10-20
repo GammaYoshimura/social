@@ -25,7 +25,7 @@
 				}
 				echo "</div>";
 				echo "<div class='edicion'>";
-				$albums = mysqli_query($link, "SELECT * FROM `albums` WHERE usuarios_idusuarios='" . $_GET['iduser'] . "'");
+				$albums = db_query("SELECT * FROM albums WHERE usuarios_idusuarios = ?", array((int)$_GET['iduser']), 'i');
 				print "Album: <div class='input'>
 								<span class='select'>
 									<select name='foto_album'><option value=''>Ninguno</option>";
@@ -67,19 +67,19 @@
 		?>
 	</ul>
 	<?php
-	$query=mysqli_query($link,"
+	$query=db_query("
 			SELECT idusuarios, nombre, apellidos, archivo
 			FROM amigos, usuarios
 			LEFT JOIN fotos
 			ON idfotos_princi=idfotos
-			WHERE user1='".$global_idusuarios."' AND user2=idusuarios OR user2='".$global_idusuarios."' AND user1=idusuarios
+			WHERE (user1 = ? AND user2 = idusuarios) OR (user2 = ? AND user1 = idusuarios)
 			UNION
 			SELECT idusuarios, nombre, apellidos, archivo
 			FROM usuarios
 			LEFT JOIN fotos
 			ON idfotos_princi=idfotos
-			WHERE idusuarios='" . $global_idusuarios . "'
-		");
+			WHERE idusuarios = ?
+		", array((int)$global_idusuarios, (int)$global_idusuarios, (int)$global_idusuarios), 'iii');
 	?>
 	<script>
 		//Declarando variables
