@@ -10,9 +10,9 @@ if(	(!$_POST['Nombre'] OR !$_POST['Apellidos'] OR !$_POST['contrasenia'] OR !$_P
 		</div>
 		<?php
 }else{
-	$existe = mysqli_query($link,"SELECT * FROM usuarios WHERE email='".$_POST['Email']."'");
+	$existe = db_query("SELECT idusuarios FROM usuarios WHERE email = ?", array($_POST['Email']));
 
-	if(mysqli_num_rows($existe) !="0"){
+	if(!$existe || mysqli_num_rows($existe) != 0){
 		?>
 		<div class="centrar">
 			<div class="error_ajustable">
@@ -57,9 +57,8 @@ http://".Sitio_direccion."/otros.php?activar_cuenta=1&amp;codigo=".$codigo_activ
 			//TODO: Avisar fallo envio email
 		}
 		
-		mysqli_query($link,"INSERT INTO usuarios (nombre, apellidos, fnac, password, email, fecha_reg, sexo, idfotos_princi, provincia, activacion)
-			values ( '".$_POST['Nombre']."', '".$_POST['Apellidos']."', '".$_POST['nacimiento_hidden']."', '".sha1($_POST['contrasenia'])."',
-			 '".$_POST['Email']."', now(), '".$_POST['Sexo']."', '{$img_princ}', '".$_POST['Provincia']."', '{$codigo_activacion}' )");
+		db_query("INSERT INTO usuarios (nombre, apellidos, fnac, password, email, fecha_reg, sexo, idfotos_princi, provincia, activacion)
+			VALUES (?, ?, ?, ?, ?, now(), ?, ?, ?, ?)", array($_POST['Nombre'], $_POST['Apellidos'], $_POST['nacimiento_hidden'], sha1($_POST['contrasenia']), $_POST['Email'], $_POST['Sexo'], $img_princ, $_POST['Provincia'], $codigo_activacion), 'ssssssisi');
 		error_mysql();
 		?>
 		<div class="centrar">

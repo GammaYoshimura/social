@@ -2,23 +2,24 @@
 session_start();
 require('inc/config.php');
 
-if(isset($_SESSION['idsesion']) AND !$_GET['activacion'])
+if(isset($_SESSION['idsesion']) && empty($_GET['activacion']))
 	header("Location: inicio.php");
 
 
-if($_POST['email']){
+if(isset($_POST['email'], $_POST['password']) && is_string($_POST['email']) && is_string($_POST['password'])){
 	//TODO: blowfish
 	//COMPROBAR DATOS LOGIN
-	$login=mysqli_query($link,"SELECT * FROM usuarios WHERE email='".$_POST['email']."' AND password='".sha1($_POST['password'])."' AND activacion = '1'");
+	$login = db_query("SELECT * FROM usuarios WHERE email = ? AND activacion = 1", array($_POST['email']));
+	$r_login = $login ? mysqli_fetch_assoc($login) : false;
 
 	//LOGIN OK
-	if(mysqli_num_rows($login)==1){
-		$codigo_temp=rand(0, 99999999999);
-		$r_login=mysqli_fetch_assoc($login);
-		mysqli_query($link,"UPDATE usuarios SET idsesion='".$codigo_temp."' WHERE idusuarios='".$r_login['idusuarios']."'");
+	if($r_login && hash_equals($r_login['password'], sha1($_POST['password']))){
+		$codigo_temp = bin2hex(random_bytes(16));
+		db_query("UPDATE usuarios SET idsesion = ? WHERE idusuarios = ?", array($codigo_temp, (int)$r_login['idusuarios']), 'si');
 		
 		// Log de acceso con IP & fecha
-		mysqli_query($link,"INSERT INTO accesos (usuarios_idusuarios, ip, fecha) VALUES ('{$r_login["idusuarios"]}','{$_SERVER["REMOTE_ADDR"]}',now())");
+		db_query("INSERT INTO accesos (usuarios_idusuarios, ip, fecha) VALUES (?, ?, now())", array((int)$r_login['idusuarios'], isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''), 'is');
+		session_regenerate_id(true);
 		$_SESSION['idsesion']=$codigo_temp;
 		
 		header( "Location: inicio.php" );
@@ -29,11 +30,10 @@ if($_POST['email']){
 	//LOGIN FAIL
 	}else{
 		//COMPROBAR ACTIVACION CUENTA
-		$sql = "SELECT * FROM usuarios WHERE email='".$_POST['email']."' AND activacion != '1'";
-		$q_activacion = mysqli_query($link, $sql);
+		$q_activacion = db_query("SELECT idusuarios FROM usuarios WHERE email = ? AND activacion <> 1", array($_POST['email']));
 	
 		//CUENTA NO ACTIVADA
-		if(mysqli_num_rows($q_activacion)==1){
+		if($q_activacion && mysqli_num_rows($q_activacion)==1){
 			$error = "activacion";
 		}else{
 			$error = "datos";

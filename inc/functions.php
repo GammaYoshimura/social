@@ -1,4 +1,39 @@
 <?php
+// Ejecuta SQL con parámetros enlazados. Para SELECT devuelve mysqli_result.
+function db_query($sql, $params = array(), $types = '') {
+	global $link;
+	$stmt = mysqli_prepare($link, $sql);
+	if (!$stmt) {
+		return false;
+	}
+	if (count($params) > 0) {
+		if ($types === '') {
+			foreach ($params as $param) {
+				$types .= is_int($param) ? 'i' : (is_float($param) ? 'd' : 's');
+			}
+		}
+		$bind = array($types);
+		foreach ($params as $key => $value) {
+			$bind[] = &$params[$key];
+		}
+		if (!call_user_func_array(array($stmt, 'bind_param'), $bind)) {
+			mysqli_stmt_close($stmt);
+			return false;
+		}
+	}
+	if (!mysqli_stmt_execute($stmt)) {
+		mysqli_stmt_close($stmt);
+		return false;
+	}
+	if (mysqli_stmt_field_count($stmt) === 0) {
+		mysqli_stmt_close($stmt);
+		return true;
+	}
+	$result = mysqli_stmt_get_result($stmt);
+	mysqli_stmt_close($stmt);
+	return $result;
+}
+
 function NombreApellido($input, $maximo = 18) {//si no se pasa segudo parametro sera X por defecto
 	$minimo = 10;
 	//Posicion minima del espacio, evita nombres cortos
